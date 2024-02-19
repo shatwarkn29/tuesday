@@ -25,14 +25,11 @@ jobs:
         id: GitSHAAndPath
         run: |
             echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-            CHANGED_PATH=$(git show --name-status HEAD) 
-            echo "Changed path: $CHANGED_PATH"
 
       - name: Print Last Commit Details
         run: |
           echo "Commit Hash: $GITHUB_SHA"
           echo "Branch Name: $GITHUB_REF"
-          echo "Changed Path: {${{ steps.GitSHAAndPat.CHANGED_PATH }}}"
 
       - name: Get changed files
         id: changed-files
@@ -48,6 +45,8 @@ jobs:
             done
 
       - uses: cinotify/github-action@main
+        env:
+            ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'Building main'
@@ -56,4 +55,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            Changed Path: {${{ steps.GitSHAAndPath.CHANGED_PATH }}}
+            changed file: ${ALL_CHANGED_FILES}
