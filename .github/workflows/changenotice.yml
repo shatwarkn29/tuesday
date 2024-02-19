@@ -50,7 +50,7 @@ jobs:
         run: |
             for file in ${ALL_CHANGED_FILES}; do
               echo "$file was changed"
-            done
+            Above paths are where the changes were made. 
 
       - uses: cinotify/github-action@main
         env:
