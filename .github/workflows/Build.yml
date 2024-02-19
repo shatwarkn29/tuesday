@@ -1,0 +1,22 @@
+name: Build and Test React App
+
+on:
+  push:
+    branches: 'main'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: "Get Current Date"
+        id: today
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Use Date Output
+        run: echo "The current date is ${{ steps.today.outputs.date }}"
+      - name: Install dependencies
+        run: yarn install
+      - name: Build
+        run: yarn build

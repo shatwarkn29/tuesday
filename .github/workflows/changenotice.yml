@@ -1,36 +1,46 @@
-name: Notidy the changes 
-# **What it does**: It automatically triggers when there is a change to any of the files in the .github/workflows and send a notification or mail to the admin. 
+name: Notify changes
+
+# **What it does**: Triggers on changes to .github/workflows, sends email with commit details to admin
+
 on:
   push:
     branches: ['main']
-    paths: 
-    - '.github/workflows/**'
-    
+    paths:
+      - '.github/workflows/**'
+
 permissions:
-    contents: read
-    
+  contents: read
+
 jobs:
-    Collect-commits:
-        permissions:
-            contents: read
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
+  Collect-commit:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-        - name: "Get Git SHA"
-          id: GitSHA
-          run: |
-            echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      - name: "Get Git SHA and changed path"
+        id: GitSHAAndPath
+        run: |
+          echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          CHANGED_PATH=$(git diff --name-only HEAD~1 | grep -E '^\.github/workflows/')
+          echo "CHANGED_PATH=$CHANGED_PATH" >> $GITHUB_OUTPUT
 
-        - name: Print Last Commit Details.
-          run: |
-                echo "Commit Hash: $GITHUB_SHA"
-                echo "Branch Name: $GITHUB_REF" 
+      - name: Print Last Commit Details
+        run: |
+          echo "Commit Hash: $GITHUB_SHA"
+          echo "Branch Name: $GITHUB_REF"
+          echo "Changed Path: ${{ steps.GitSHAAndPath.outputs.CHANGED_PATH }}"
 
-        - uses: cinotify/github-action@main
-          with:
-            to: 'shatwarkn@gmail.com'
-            subject: 'building main'
-            body: 'This is a notification from GitHub actions. The recent commit is {{$GITHUB_SHA}}'
+      - uses: cinotify/github-action@main
+        with:
+          to: 'shatwarkn@gmail.com'
+          subject: 'Building main'
+          body: |
+            This is a notification from GitHub actions.
+
+            Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
+            Branch Name: ${{ github.ref }}
+            Changed Path: ${{ steps.GitSHAAndPath.outputs.CHANGED_PATH }}
