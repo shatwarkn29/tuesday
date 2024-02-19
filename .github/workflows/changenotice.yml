@@ -7,6 +7,14 @@ on:
     branches: ['main']
     paths:
       - '.github/workflows/**'
+  workflow_dispatch:
+    inputs:
+        paths : 
+            type: choice
+            required: true
+            description: "Pipeline Run Path"
+            options: 
+                - '.github/workflows/**'
 
 permissions:
   contents: read
@@ -34,7 +42,7 @@ jobs:
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
-        # NOTE: `since_last_remote_commit: true` is implied by default and falls back to the previous local commit.
+
   
       - name: List all changed files
         env:
@@ -49,9 +57,9 @@ jobs:
             ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         with:
           to: 'shatwarkn@gmail.com'
-          subject: 'Building main'
+          subject: 'There is a new commit done to files in .github/workflows '
           body: |
-            This is a notification from GitHub actions.
+            This is a notification from GitHub actions for the recent commit 
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
