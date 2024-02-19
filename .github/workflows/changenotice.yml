@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Commit Hash: $GITHUB_SHA"
           echo "Branch Name: $GITHUB_REF"
-          echo "Changed Path: ${{ steps.GitSHAAndPath.outputs.CHANGED_PATH }}"
+          echo "Changed Path: ${{ steps.GitSHAAndPat.CHANGED_PATH }}"
 
       - uses: cinotify/github-action@main
         with:
@@ -42,4 +42,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            Changed Path: ${{ steps.GitSHAAndPath.outputs.CHANGED_PATH }}
+            Changed Path: ${{ steps.GitSHAAndPath.CHANGED_PATH }}
