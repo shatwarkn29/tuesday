@@ -25,7 +25,7 @@ jobs:
         id: GitSHAAndPath
         run: |
           echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-          CHANGED_PATH=$(git diff --name-only HEAD~1 | grep -E '^\.github/workflows/')
+          CHANGED_PATH=$(git log -p -1 )
 
       - name: Print Last Commit Details
         run: |
