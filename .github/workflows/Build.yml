@@ -2,7 +2,7 @@ name: Build and Test React App
 
 on:
   workflow_dispatch:
-    
+
 jobs:
 
   build:
@@ -15,7 +15,5 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Use Date Output
         run: echo "The current date is ${{ steps.today.outputs.date }}"
-      - name: Install dependencies
-        run: yarn install
-      - name: Build
-        run: yarn build
+      - name: Install NPM
+        run: npm ci
