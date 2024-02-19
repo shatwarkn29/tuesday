@@ -28,3 +28,9 @@ jobs:
           run: |
                 echo "Commit Hash: $GITHUB_SHA"
                 echo "Branch Name: $GITHUB_REF" 
+
+        - uses: cinotify/github-action@main
+          with:
+            to: 'shatwarkn@gmail.com'
+            subject: 'building main'
+            body: 'This is a notification from GitHub actions. The recent commit is {{$GITHUB_SHA}}'
