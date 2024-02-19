@@ -1,0 +1,31 @@
+name: Notidy the changes 
+# **What it does**: It automatically triggers when there is a change to any of the files in the .github/workflows and send a notification or mail to the admin. 
+on:
+  push:
+    branches: ['main']
+    paths: 
+    - 'github/workflows/**'
+    
+permissions:
+    contents: read
+    
+jobs:
+    Collect-commits:
+        permissions:
+            contents: read
+        runs-on: prostore-actions-runner 
+        steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+
+        - name: "Get Git SHA"
+          id: GitSHA
+          run: |
+            git log -1 --oneline --branch main -- path/".github"
+            echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+        - name: Print Last Commit Details.
+          run: |
+                echo "Commit Hash: $GITHUB_SHA"
+                echo "Branch Name: $GITHUB_REF" 
