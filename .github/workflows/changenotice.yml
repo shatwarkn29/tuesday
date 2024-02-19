@@ -22,7 +22,6 @@ jobs:
         - name: "Get Git SHA"
           id: GitSHA
           run: |
-            git log -1 --oneline --branch main -- path/".github"
             echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
         - name: Print Last Commit Details.
