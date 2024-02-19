@@ -32,7 +32,7 @@ jobs:
         run: |
           echo "Commit Hash: $GITHUB_SHA"
           echo "Branch Name: $GITHUB_REF"
-          echo "Changed Path: ${{ steps.GitSHAAndPat.CHANGED_PATH }}"
+          echo "Changed Path: {${{ steps.GitSHAAndPat.CHANGED_PATH }}}"
 
       - name: Get changed files
         id: changed-files
@@ -56,4 +56,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            Changed Path: ${{ steps.GitSHAAndPath.CHANGED_PATH }}
+            Changed Path: {${{ steps.GitSHAAndPath.CHANGED_PATH }}}
