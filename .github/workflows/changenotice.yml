@@ -25,7 +25,7 @@ jobs:
         id: GitSHAAndPath
         run: |
             echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-            CHANGED_PATH=$(git log -1 --pretty=format:'%H - %p')
+            CHANGED_PATH=$(git show --name-status HEAD)
 
       - name: Print Last Commit Details
         run: |
