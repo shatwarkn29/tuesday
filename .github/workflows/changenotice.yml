@@ -1,6 +1,6 @@
 name: Notify changes
 
-# **What it does**: Triggers on changes to .github/workflows, sends email with commit details and changed paths to admin
+# **What it does**: Triggers on changes to .github/workflows, sends email with commit details to admin
 
 on:
   push:
@@ -24,25 +24,29 @@ jobs:
       - name: "Get Git SHA and changed path"
         id: GitSHAAndPath
         run: |
-          echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-          CHANGED_PATHS=$(git diff --name-only HEAD~1 | grep -E '^\.github/workflows/')
-          echo "CHANGED_PATHS=${CHANGED_PATHS}" >> $GITHUB_OUTPUT
+            echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Print Last Commit Details
+        run: |
+          echo "Commit Hash: $GITHUB_SHA"
+          echo "Branch Name: $GITHUB_REF"
 
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
         # NOTE: `since_last_remote_commit: true` is implied by default and falls back to the previous local commit.
-
+  
       - name: List all changed files
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+            ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          echo "Changed files:"
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "- $file"
-          done
+            for file in ${ALL_CHANGED_FILES}; do
+              echo "$file was changed"
+            done
 
       - uses: cinotify/github-action@main
+        env:
+            ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'Building main'
@@ -51,10 +55,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-
-            **Changed Files:**
-
-            {{#each steps.changed-files.outputs.all_changed_files as |file|}}
-              - {{ file }}
-            {{/each}}
-
+            changed file: ${{env.ALL_CHANGED_FILES}}
