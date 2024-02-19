@@ -13,7 +13,7 @@ jobs:
     Collect-commits:
         permissions:
             contents: read
-        runs-on: prostore-actions-runner 
+        runs-on: ubuntu-latest
         steps:
         - uses: actions/checkout@v3
           with:
