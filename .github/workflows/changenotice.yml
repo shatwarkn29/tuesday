@@ -34,17 +34,18 @@ jobs:
         run: |
             echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
-      - name: Print Last Commit Details
-        run: |
-          echo "Commit Hash: $GITHUB_SHA"
-          echo "Branch Name: $GITHUB_REF"
-
       - name: Get changed files
         id: changed-files
         shell: pwsh
         run: |
             echo "CommitChangePath = ${git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6}" >> $GITHUB_OUTPUT
-             
+
+      - name: Print Last Commit Details
+        run: |
+            echo "Commit Hash: $GITHUB_SHA"
+            echo "Branch Name: $GITHUB_REF"   
+            echo "Changed File:${{steps.changed-files.outputs.CommitChangePath}}"    
+                 
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
         run: |
@@ -57,8 +58,6 @@ jobs:
             echo "$latest_commit"
 
       - uses: cinotify/github-action@main
-        env:
-            ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.CommitChangePath }}
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows '
@@ -67,4 +66,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            changed file: ${{env.ALL_CHANGED_FILES}}
+            changed file: ${{steps.changed-files.outputs.CommitChangePath}}
