@@ -38,8 +38,7 @@ jobs:
         id: changed-files
         shell: pwsh
         run: |
-            $commitHash = ${{ steps.GitSHAAndPath.outputs.ShortID }}
-            echo "CommitChangePath = git show --name-only $commitHash | Select-Object -Skip 6" >> GITHUB_OUTPUT
+            echo "CommitChangePath = git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6"
 
       - name: Print Last Commit Details 
         run: |
