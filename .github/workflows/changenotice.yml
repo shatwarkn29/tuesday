@@ -48,6 +48,7 @@ jobs:
                 # Append the file path to the Path array
                 Path+=("$filepath")
             done
+            echo "$path"
             echo "::set-output name=contentpath::$path"
 
       - name: Print Last Commit Details 
