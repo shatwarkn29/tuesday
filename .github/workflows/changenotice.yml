@@ -39,12 +39,15 @@ jobs:
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7
             changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
-            $Path=@()
-            foreach ($filepath in $changed_files) {
+            Path=()
+            # Loop over the elements of the changed_files_array
+            for filepath in "${changed_files_array[@]}"
+            do
                 # Process each file path here
                 echo "Processing: $filepath"
-                $path+=$filepath
-            }
+                # Append the file path to the Path array
+                Path+=("$filepath")
+            done
             echo "::set-output name=contentpath::$path"
 
       - name: Print Last Commit Details 
