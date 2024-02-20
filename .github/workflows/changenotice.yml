@@ -43,9 +43,9 @@ jobs:
         id: changed-files
         shell: pwsh
         run: |
-            path: git show --name-only 30e96e4709cdb9af7c48428da20e18260bdffe12 | Select-Object -Skip 6
-            echo "$path" 
-         
+           Commitchangepath=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6) >> $GITHUB_OUTPUT
+           echo "COMMITPATH=$ommitchangepath"
+             
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
         run: |
@@ -57,14 +57,9 @@ jobs:
             echo "COMMIT_A=$latest_commit"
             echo "$latest_commit"
 
-      - name: Compare two commits 
-        run: |
-            
-            
-
       - uses: cinotify/github-action@main
         env:
-            ALL_CHANGED_FILES: ${{ steps.changed-files.path }}
+            ALL_CHANGED_FILES: ${{ steps.changed-files.Commitchangepath }}
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows '
