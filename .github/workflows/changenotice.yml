@@ -57,7 +57,7 @@ jobs:
             foreach ($filepath in $Changed_files) {
                 echo "Processing: $filepath"
                 $count+=1
-                $path+=("$count",") ", $filepath," ")
+                $path+=("$count","-> ", $filepath," \`n")
              } 
             echo "::set-output name=contentpath::$path"
             echo "::set-output name=pathchanged::$Changed_files"
@@ -76,10 +76,17 @@ jobs:
           subject: 'There is a new commit done to files in .github/workflows'
           body: |
             This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
-            Commit done by: ${{env.AUTHOR}}
-            Commit message : ${{ github.event.head_commit.message }}
-            Date and Time : ${{ steps.date.outputs.date }}
-            Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
-            Branch Name: ${{ github.ref }}
-            changed file: ${{steps.changed-files.outputs.contentpath}}
 
+            ------------------------------------------------------------------------------------------
+            Branch        : ${{ github.ref }}
+            Commit        : ${{ steps.GitSHAAndPath.outputs.ShortID }}
+            Message       : ${{ github.event.head_commit.message }}
+            User          : ${{env.AUTHOR}}
+            Date and Time : ${{ steps.date.outputs.date }}
+            commit link   : https://github.com/shatwarkn29/tuesday/commit/$GITHUB_SHA
+
+            changed file  
+            -------------------------------------------------------------------------------------------
+            ${{steps.changed-files.outputs.contentpath}}
+
+            -------------------------------------------------------------------------------------------
