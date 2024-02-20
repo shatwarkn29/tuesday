@@ -79,6 +79,7 @@ jobs:
           body: |
             This is a notification from GitHub actions for the recent commit 
             Commit done by: ${{env.AUTHOR}}
+            Commit message : ${{ github.event.workflow_run.head_commit.message }}
             Date and Time : ${{ steps.date.outputs.date }}
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
