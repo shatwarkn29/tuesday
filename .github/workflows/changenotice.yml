@@ -50,7 +50,7 @@ jobs:
         run: |
             Write-Host "Changed files:"
             foreach ($file in ${{ steps.changed-files.outputs.changedFiles }}) {
-            Write-Host "  - $file"
+            echo "  - $file"
             }
 
       - name: Fetch recent commits from thursday repo.
