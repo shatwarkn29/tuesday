@@ -44,7 +44,7 @@ jobs:
         shell: pwsh
         run: |
             $CommitChangePath = git show --name-only 5a3d51a | Select-Object -Skip 6
-            echo "COMMITPATH=$ommitchangepath"
+            echo "$CommitChangePath"
              
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
@@ -59,7 +59,7 @@ jobs:
 
       - uses: cinotify/github-action@main
         env:
-            ALL_CHANGED_FILES: ${{ steps.changed-files.Commitchangepath }}
+            ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.Commitchangepath }}
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows '
