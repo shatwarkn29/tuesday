@@ -39,13 +39,13 @@ jobs:
         shell: pwsh
         run: |
             $Commitpath = git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6
-            echo "$Commitpath" >> GITHUB_OUTPUT
+            echo "$Commitpath"
 
       - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF"   
-            echo "Changed File: ${{steps.changed-files.outputs.Commitpath}}"    
+            echo "Changed File: ${{steps.changed-files.Commitpath}}"    
 
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
@@ -67,4 +67,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            changed file: ${{steps.changed-files.outputs.Commitpath}}
+            changed file: ${{steps.changed-files.Commitpath}}
