@@ -18,7 +18,8 @@ on:
 
 permissions:
   contents: read
-
+env:
+    AUTHOR: ${{ github.event.pusher.name }}
 jobs:
   Collect-commit:
     permissions:
@@ -38,6 +39,7 @@ jobs:
         id: changed-files
         shell : pwsh
         run: |
+            git config user.name "GitHubActions"
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
             $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
             $path=@()
@@ -71,6 +73,7 @@ jobs:
           subject: 'There is a new commit done to files in .github/workflows '
           body: |
             This is a notification from GitHub actions for the recent commit 
+            Commit done by: ${{env.AUTHOR}}
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
