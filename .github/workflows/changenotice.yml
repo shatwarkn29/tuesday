@@ -38,8 +38,9 @@ jobs:
         id: changed-files
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7
-            echo "path = ${ git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7}" >> $GITHUB_OUTPUT
-
+            changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
+            echo "path = ${changed_files}" >> $GITHUB_OUTPUT
+            
       - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
