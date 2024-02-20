@@ -57,9 +57,9 @@ jobs:
             owner="shatwarkn29"
             repo="thursday"
             token="${{ secrets.TOKEN_THURSDAY }}"
-            
             latest_commit=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$owner/$repo/commits?path=$folder_path" | jq -r '.[0].sha')
-            echo "::set-output name=commit-A::$latest_commit"
+            echo "COMMIT_A=$latest_commit"
+            echo "$latest_commit"
 
       - uses: cinotify/github-action@main
         env:
