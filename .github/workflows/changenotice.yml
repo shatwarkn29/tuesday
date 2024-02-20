@@ -40,7 +40,7 @@ jobs:
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
             Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
-            path=@()
+            $path=@()
             foreach ($filepath in $Changed_files) {
                 # Process each file path here
                 echo "Processing: $filepath"
