@@ -74,5 +74,5 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            changed file: "${{steps.changed-files.outputs.contentpath}}"
+            changed file: ${{steps.changed-files.outputs.contentpath}}
 
