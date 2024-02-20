@@ -43,8 +43,7 @@ jobs:
         id: changed-files
         shell: pwsh
         run: |
-            $CommitChangePath = git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6  >> $GITHUB_OUTPUT
-            echo "$CommitChangePath"
+            echo "CommitChangePath = ${git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6}  >> $GITHUB_OUTPUT
              
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
