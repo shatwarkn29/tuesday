@@ -30,6 +30,11 @@ jobs:
         with:
           fetch-depth: 0
 
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+
       - name: "Get Git SHA and changed path"
         id: GitSHAAndPath
         run: |
@@ -46,7 +51,7 @@ jobs:
             foreach ($filepath in $Changed_files) {
                 # Process each file path here
                 echo "Processing: $filepath"
-                $path+=$filepath
+                $path+=($filepath ,"`n")
              } 
             echo "::set-output name=contentpath::$path"
 
@@ -74,7 +79,7 @@ jobs:
           body: |
             This is a notification from GitHub actions for the recent commit 
             Commit done by: ${{env.AUTHOR}}
-
+            Date and Time : ${{ steps.date.outputs.date }}
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
             changed file: ${{steps.changed-files.outputs.contentpath}}
