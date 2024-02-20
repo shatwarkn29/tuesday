@@ -53,10 +53,11 @@ jobs:
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
             $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
             $path=@()
+            $count=0
             foreach ($filepath in $Changed_files) {
                 echo "Processing: $filepath"
 
-                $path+=($filepath -join "`n")
+                $path+=("$count ",":", $filepath," ",  -join "`n")
              } 
             echo "::set-output name=contentpath::$path"
             echo "::set-output name=pathchanged::$Changed_files"
@@ -75,7 +76,7 @@ jobs:
           subject: 'There is a new commit done to files in .github/workflows '
           body: |
             This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
-            
+
             Commit done by: ${{env.AUTHOR}}
             Commit message : ${{ github.event.head_commit.message }}
             Date and Time : ${{ steps.date.outputs.date }}
