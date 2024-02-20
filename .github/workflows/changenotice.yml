@@ -43,7 +43,7 @@ jobs:
         id: changed-files
         shell: pwsh
         run: |
-            $CommitChangePath = git show --name-only 5a3d51a | Select-Object -Skip 6
+            $CommitChangePath = git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6
             echo "$CommitChangePath"
              
       - name: Fetch recent commits from thursday repo.
