@@ -38,9 +38,10 @@ jobs:
         id: changed-files
         shell: pwsh
         run: |
-            echo "CommitChangePath = ${git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6}"
+            $commitHash = ${{ steps.GitSHAAndPath.outputs.ShortID }}
+            echo "CommitChangePath = git show --name-only $commitHash | Select-Object -Skip 6" >> GITHUB_OUTPUT
 
-      - name: Print Last Commit Details
+      - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF"   
