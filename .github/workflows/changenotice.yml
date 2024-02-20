@@ -41,7 +41,7 @@ jobs:
             changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
             Path=()
             # Loop over the elements of the changed_files_array
-            for filepath in "${changed_files_array}"
+            for filepath in $changed_files_array
             do
                 # Process each file path here
                 echo "Processing: $filepath"
