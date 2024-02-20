@@ -68,24 +68,14 @@ jobs:
             echo "Branch Name: $GITHUB_REF" 
             echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"      
 
-      - name: Fetch recent commits from thursday repo.
-        id: fetch-commits-thursday 
-        run: |
-            folder_path=".github/workflows"  # Update this with the path to the folder in Repository A
-            owner="shatwarkn29"
-            repo="thursday"
-            token="${{ secrets.TOKEN_THURSDAY }}"
-            latest_commit=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$owner/$repo/commits?path=$folder_path" | jq -r '.[0].sha')
-            echo "COMMIT_A=$latest_commit"
-            echo "$latest_commit"
-
 # send a mail to admin regarding the change in the file in the folder .github/workflows
       - uses: cinotify/github-action@main
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows '
           body: |
-            This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder. `n
+            This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
+            
             Commit done by: ${{env.AUTHOR}}
             Commit message : ${{ github.event.head_commit.message }}
             Date and Time : ${{ steps.date.outputs.date }}
