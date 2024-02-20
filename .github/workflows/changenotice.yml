@@ -39,8 +39,7 @@ jobs:
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7
             changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
-            readarray -t changed_files_array <<<"$changed_files"
-            $contentpath = $changed_files_array -join "`n`"
+            $contentpath = $changed_files -join "`n`"
             echo "::set-output name=contentpath::$contentpath"
 
       - name: Print Last Commit Details 
