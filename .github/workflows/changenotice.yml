@@ -48,9 +48,7 @@ jobs:
         env:
             ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-            for file in ${ALL_CHANGED_FILES}; do
-              echo "$file was changed"
-            Above paths are where the changes were made. 
+            echo "${{env.ALL_CHANGED_FILES}}"
 
       - uses: cinotify/github-action@main
         env:

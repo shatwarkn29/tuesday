@@ -17,5 +17,3 @@ jobs:
         run: echo "The current date is ${{ steps.today.outputs.date }}"
       - name: Install NPM
         run: npm ci
-      - name: Build 
-        run: npm build
