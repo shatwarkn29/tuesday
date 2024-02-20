@@ -38,9 +38,9 @@ jobs:
         id: changed-files
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7
-            changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
-            $contentpath = $changed_files -join "`n"
-            echo "::set-output name=contentpath::$contentpath"
+            git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 | Out-String -Stream | ForEach-Object {
+             echo "::set-output name=contentpath::{0}" -f $_
+            }
 
       - name: Print Last Commit Details 
         run: |
