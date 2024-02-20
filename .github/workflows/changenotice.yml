@@ -36,12 +36,10 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        shell : pwsh
         run: |
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7
-            git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 | Out-String -Stream | ForEach-Object {
-             echo "::set-output name=contentpath::{0}" -f $_
-            }
+            changed_files=$(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | tail -n +7)
+            echo "::set-output name=contentpath::$changed_files"
 
       - name: Print Last Commit Details 
         run: |
