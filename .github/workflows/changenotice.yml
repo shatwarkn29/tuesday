@@ -39,7 +39,8 @@ jobs:
         shell: pwsh
         run: |
             $Commitpath = git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6
-            
+            echo "$Commitpath" >> GITHUB_OUTPUT
+
       - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
