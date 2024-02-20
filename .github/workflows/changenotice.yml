@@ -51,7 +51,7 @@ jobs:
             foreach ($filepath in $Changed_files) {
                 # Process each file path here
                 echo "Processing: $filepath"
-                $path+=($filepath ,"`n")
+                $path+=$filepath 
              } 
             echo "::set-output name=contentpath::$path"
 
