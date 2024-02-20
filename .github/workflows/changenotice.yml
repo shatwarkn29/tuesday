@@ -45,7 +45,7 @@ jobs:
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF"   
-            echo "Changed File: ${{steps.changed-files.Commitpath}}"    
+            echo "Changed File: ${{steps.changed-files.outputs.Commitpath}}"    
 
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
@@ -67,4 +67,4 @@ jobs:
 
             Commit Hash: ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Branch Name: ${{ github.ref }}
-            changed file: ${{steps.changed-files.Commitpath}}
+            changed file: ${{steps.changed-files.outputs.Commitpath}}
