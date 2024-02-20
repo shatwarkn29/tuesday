@@ -59,12 +59,14 @@ jobs:
                 $path+=($filepath,'`n')
              } 
             echo "::set-output name=contentpath::$path"
+            echo "::set-output name=pathchanged::$Changed_files"
+
 # Print the Commit details 
       - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF" 
-            echo "Changed File: '${{steps.changed-files.outputs.contentpath}}'"      
+            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"      
 
       - name: Fetch recent commits from thursday repo.
         id: fetch-commits-thursday 
