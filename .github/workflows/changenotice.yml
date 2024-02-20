@@ -1,6 +1,6 @@
 name: Notify changes
 
-# **What it does**: Triggers on changes to .github/workflows, sends email with commit details to admin
+# **What it does**: Triggers on changes to .github/workflows, sends email with commit details to admin. 
 
 on:
   push:
@@ -18,28 +18,33 @@ on:
 
 permissions:
   contents: read
+
 env:
     AUTHOR: ${{ github.event.pusher.name }}
+
 jobs:
-  Collect-commit:
+  Collect-commit-data:
     permissions:
       contents: read
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-
-      - name: Get current date
+# Get the Current Date and Time
+      - name: Get current date time
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
 
-      - name: "Get Git SHA and changed path"
+# Get the Git SHA
+      - name: "Get Git SHA"
         id: GitSHAAndPath
         run: |
             echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
+# get the path where the change has occured.
       - name: Get changed files
         id: changed-files
         shell : pwsh
@@ -49,12 +54,12 @@ jobs:
             $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
             $path=@()
             foreach ($filepath in $Changed_files) {
-                # Process each file path here
                 echo "Processing: $filepath"
-                $path+=$filepath 
+
+                $path+=($filepath,'`n')
              } 
             echo "::set-output name=contentpath::$path"
-
+# Print the Commit details 
       - name: Print Last Commit Details 
         run: |
             echo "Commit Hash: $GITHUB_SHA"
@@ -72,12 +77,13 @@ jobs:
             echo "COMMIT_A=$latest_commit"
             echo "$latest_commit"
 
+# send a mail to admin regarding the change in the file in the folder .github/workflows
       - uses: cinotify/github-action@main
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows '
           body: |
-            This is a notification from GitHub actions for the recent commit 
+            This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder. `n
             Commit done by: ${{env.AUTHOR}}
             Commit message : ${{ github.event.head_commit.message }}
             Date and Time : ${{ steps.date.outputs.date }}
