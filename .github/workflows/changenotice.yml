@@ -56,7 +56,7 @@ jobs:
             $count=1
             foreach ($filepath in $Changed_files) {
                 echo "Processing: $filepath"
-                $path+= "$count -> $filepath\n"  
+                $path+= "$count -> $filepath  "  
                 $count+=1
              } 
             echo "::set-output name=contentpath::$path"
@@ -64,10 +64,12 @@ jobs:
 
 # Print the Commit details 
       - name: Print Last Commit Details 
+        id: details
         run: |
+            Commit_SHA = $GITHUB_SHA
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF" 
-            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"    
+            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"  
 
 # send a mail to admin regarding the change in the file in the folder .github/workflows
       - uses: cinotify/github-action@main
@@ -81,9 +83,9 @@ jobs:
             Branch        : ${{ github.ref }}
             Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Message     : ${{ github.event.head_commit.message }}
-            User           : ${{env.AUTHOR}}
-            Date & Time : ${{ steps.date.outputs.date }}
-            commit link : https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}
+            User            : ${{env.AUTHOR}}
+            Date&Time : ${{ steps.date.outputs.date }}
+            commit link : https://github.com/shatwarkn29/tuesday/commit/${{steps.details.outputs.Commit_SHA}}
 
             changed files  
             -------------------------------------------------------------------------------------------
