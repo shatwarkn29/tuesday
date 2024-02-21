@@ -59,7 +59,8 @@ jobs:
                 $count+=1
                 $path+= "$count -> $filepath`n" 
              } 
-            echo "::set-output name=contentpath::$path"
+            $jsonPath = $path | ConvertTo-Json -Compress
+            echo "contentpath=$jsonPath" >> $GITHUB_ENV
             echo "::set-output name=pathchanged::$Changed_files"
 
 # Print the Commit details 
@@ -67,7 +68,10 @@ jobs:
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF" 
-            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"      
+            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"
+            CONTENT_PATH=$(echo "${{ env.contentpath }}" | jq -r '.contentpath')
+            # Now you can use the CONTENT_PATH variable in your script
+            echo "Content Path: $CONTENT_PATH"      
 
 # send a mail to admin regarding the change in the file in the folder .github/workflows
       - uses: cinotify/github-action@main
