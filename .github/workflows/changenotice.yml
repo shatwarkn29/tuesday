@@ -52,15 +52,14 @@ jobs:
             git config user.name "GitHubActions"
             git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
             $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
-            $path=@()
-            $count=0
+            $path=""
+            $count=1
             foreach ($filepath in $Changed_files) {
                 echo "Processing: $filepath"
+                $path+= "$count -> $filepath\n"  
                 $count+=1
-                $path+= "$count -> $filepath`n" 
              } 
-            $jsonPath = $path | ConvertTo-Json -Compress
-            echo "contentpath=$jsonPath" >> $GITHUB_ENV
+            echo "::set-output name=contentpath::$path"
             echo "::set-output name=pathchanged::$Changed_files"
 
 # Print the Commit details 
@@ -68,10 +67,7 @@ jobs:
         run: |
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF" 
-            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"
-            CONTENT_PATH=$(echo "${{ env.contentpath }}" | jq -r '.contentpath')
-            # Now you can use the CONTENT_PATH variable in your script
-            echo "Content Path: $CONTENT_PATH"      
+            echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"    
 
 # send a mail to admin regarding the change in the file in the folder .github/workflows
       - uses: cinotify/github-action@main
@@ -83,11 +79,11 @@ jobs:
 
             ------------------------------------------------------------------------------------------
             Branch        : ${{ github.ref }}
-            Commit        : ${{ steps.GitSHAAndPath.outputs.ShortID }}
-            Message       : ${{ github.event.head_commit.message }}
-            User          : ${{env.AUTHOR}}
-            Date and Time : ${{ steps.date.outputs.date }}
-            commit link   : https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}
+            Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
+            Message     : ${{ github.event.head_commit.message }}
+            User           : ${{env.AUTHOR}}
+            Date & Time : ${{ steps.date.outputs.date }}
+            commit link : https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}
 
             changed files  
             -------------------------------------------------------------------------------------------
