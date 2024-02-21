@@ -66,7 +66,6 @@ jobs:
       - name: Print Last Commit Details 
         id: details
         run: |
-            $Commit_SHA = $env.GITHUB_SHA
             echo "Commit Hash: $GITHUB_SHA"
             echo "Branch Name: $GITHUB_REF" 
             echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"  
@@ -85,7 +84,7 @@ jobs:
             Message     : ${{ github.event.head_commit.message }}
             User            : ${{env.AUTHOR}}
             Date&Time : ${{ steps.date.outputs.date }}
-            commit link : https://github.com/shatwarkn29/tuesday/commit/${{steps.details.outputs.Commit_SHA}}
+            commit link : https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}
 
             changed files  
             -------------------------------------------------------------------------------------------
