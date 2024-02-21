@@ -79,7 +79,7 @@ jobs:
             This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
 
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            Branch        : ${{ github.event.inputs.branch }}  ${GITHUB_REF##*/}
+            Branch        : ${{ github.head_ref || github.ref_name }}  
             Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Message     : ${{ github.event.head_commit.message }}
             User            : ${{ github.triggering_actor }}
