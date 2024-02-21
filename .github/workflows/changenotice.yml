@@ -83,7 +83,7 @@ jobs:
             Message       : ${{ github.event.head_commit.message }}
             User          : ${{env.AUTHOR}}
             Date and Time : ${{ steps.date.outputs.date }}
-            commit link   : "https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}"
+            commit link   : https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}
 
             changed files  
             -------------------------------------------------------------------------------------------
