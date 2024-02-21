@@ -75,13 +75,11 @@ jobs:
         with:
           to: 'shatwarkn@gmail.com'
           subject: 'There is a new commit done to files in .github/workflows'
-          content_type: text/html
-          convert_markdown: true
           body: |
             This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
 
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            Branch        : ${{ github.ref }}
+            Branch        : ${{ github.base_ref }}
             Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
             Message     : ${{ github.event.head_commit.message }}
             User            : ${{env.AUTHOR}}
