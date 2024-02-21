@@ -57,7 +57,7 @@ jobs:
             foreach ($filepath in $Changed_files) {
                 echo "Processing: $filepath"
                 $count+=1
-                $path+= "$count", "-> ", $filepath, "`n"
+                $path+= "$count -> $filepath`n" 
              } 
             echo "::set-output name=contentpath::$path"
             echo "::set-output name=pathchanged::$Changed_files"
@@ -87,5 +87,5 @@ jobs:
 
             changed files  
             -------------------------------------------------------------------------------------------
-            ${{steps.changed-files.outputs.contentpath}}
+            ${{ steps.changed-files.outputs.contentpath }}
             -------------------------------------------------------------------------------------------
