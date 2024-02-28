@@ -14,12 +14,6 @@ on:
             description: "Pipeline Run Path"
             options: 
                 - '.github/workflows/**'   
-        input1: 
-          description: 'Input 1 description'
-          required: true
-        input2:
-          description: 'Input 2 description'
-          required: false
 
 permissions:
   contents: read
@@ -96,14 +90,13 @@ jobs:
             ${{ steps.changed-files.outputs.contentpath }}
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  trigger_pipeline:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger Pipeline
-        uses: peter-evans/repository-dispatch@v1
+      - name: Trigger Workflow
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.PAT_TOKEN }}
-          repository: owner/repo
-          event-type: trigger-event
-          client-payload: '{"input1": "${{ github.event.inputs.input1 }}", "input2": "${{ github.event.inputs.input2 }}"}'
-            
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: shatwarkn29,
+              repo: tuesday,
+              workflow_id: 'Build.yml',
+              ref: 'main',
+            })
