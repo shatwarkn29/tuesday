@@ -130,7 +130,7 @@ jobs:
           git diff --name-only HEAD~ HEAD | grep -q 'folderB' 
 
       - name: Run script if changes found
-        if: ${{steps.Afolder.outputs}} == 1
+        if: steps.Afolder.outputs == 1
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -143,7 +143,7 @@ jobs:
             })
 
       - name: Run script if changes found
-        if: ${{steps.Bfolder.outputs}} == 1
+        if: steps.Bfolder.outputs == 1
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
