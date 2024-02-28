@@ -141,6 +141,7 @@ jobs:
       
           echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
           echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
+          echo "$run_jobA , $run_jobB"
 
       - name: Run script if changes found.
         if: ${{ steps.check_files.outputs.run_jobA }} == 'true' 
