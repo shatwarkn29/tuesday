@@ -129,10 +129,10 @@ jobs:
             echo $file
             if [[ $file = folderA/* ]]; then
               echo "This modified file is under the 'folderA' folder."
-              echo "::set-output name=run_job::true"
+              echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
               break
             else
-              echo "::set-output name=run_job::false"
+              echo "::set-output name=run_job::false" >> $GITHUB_OUTPUT
             fi 
           done
 
@@ -147,10 +147,10 @@ jobs:
             echo $file
             if [[ $file = folderB/* ]]; then
               echo "This modified file is under the 'folderA' folder."
-              echo "::set-output name=run_job::true"
+              echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
               break
             else
-              echo "::set-output name=run_job::false"  
+              echo "::set-output name=run_job::false" >> $GITHUB_OUTPUT
             fi
           done
 
