@@ -124,18 +124,18 @@ jobs:
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD > files.txt
          
-          run_jobA='false'
-          run_jobB='false'
+          run_jobA="false"
+          run_jobB="false"
           
           while IFS= read -r file
           do
             echo $file
             if [[ $file = folderA/* ]]; then
               echo "This modified file is under the 'folderA' folder."
-              run_jobA='true'
+              run_jobA="true"
             elif [[ $file = folderB/* ]]; then
               echo "This modified file is under the 'folderB' folder."
-              run_jobB='true'
+              run_jobB="true"
             fi 
           done < files.txt
       
