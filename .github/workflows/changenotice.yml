@@ -144,7 +144,7 @@ jobs:
           echo "$run_jobA , $run_jobB"
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobA  == 'true' 
+        if: steps.check_files.outputs.run_jobA  != 'false' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -157,7 +157,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: ${{ steps.check_files.outputs.run_jobB }} == 'true' 
+        if: steps.check_files.outputs.run_jobB  != 'false' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
