@@ -155,7 +155,7 @@ jobs:
           done
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_job == 'true' 
+        if: ${{ steps.check_files.outputs.run_job }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -168,7 +168,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: steps.check_file.outputs.run_job == 'true' 
+        if: ${{ steps.check_file.outputs.run_job }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
