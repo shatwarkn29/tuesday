@@ -109,6 +109,5 @@ jobs:
             owner: 'shatwarkn29',
             repo: 'tuesday',
             workflow_id: 'Build.yml',
-            event_type: 'Build-and-Test-React-App'
-            ref: 'main'
+            ref: 'trail'
             })
