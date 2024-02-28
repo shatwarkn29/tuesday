@@ -127,12 +127,22 @@ jobs:
           while IFS= read -r file
           do
             echo $file
-            if [[ $file = folderA/*  ||  $file = folderB/* ] ]; then
+            if [[ $file = folderA/*  ]]; then
               echo "This modified file is under the 'folderA' folder."
-              echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
+              echo "::set-output name=run_job1::true" >> $GITHUB_OUTPUT
               break
             else
-              echo "::set-output name=run_job::false" >> $GITHUB_OUTPUT
+              echo "::set-output name=run_job1::false" >> $GITHUB_OUTPUT
+            fi 
+          done
+          do
+            echo $file
+            if [[ $file = folderB/*  ]]; then
+              echo "This modified file is under the 'folderB' folder."
+              echo "::set-output name=run_job2::true" >> $GITHUB_OUTPUT
+              break
+            else
+              echo "::set-output name=run_job2::false" >> $GITHUB_OUTPUT
             fi 
           done
 
@@ -155,7 +165,7 @@ jobs:
       #     done
 
       - name: Run script if changes found.
-        if: ${{ steps.check_files.outputs.run_job }} == 'true' 
+        if: ${{ steps.check_files.outputs.run_job1 }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -168,7 +178,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: ${{ steps.check_file.outputs.run_job }} == 'true' 
+        if: ${{ steps.check_files.outputs.run_job2 }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
