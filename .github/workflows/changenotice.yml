@@ -75,25 +75,25 @@ jobs:
             echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"  
 
 # send a mail to admin regarding the change in the file in the folder .github/workflows
-      - uses: cinotify/github-action@main
-        with:
-          to: 'shatwarkn@gmail.com'
-          subject: 'There is a new commit done to files in .github/workflows'
-          body: |
-            This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
+      # - uses: cinotify/github-action@main
+      #   with:
+      #     to: 'shatwarkn@gmail.com'
+      #     subject: 'There is a new commit done to files in .github/workflows'
+      #     body: |
+      #       This is a notification from GitHub actions for the recent commit done to the file in the .github/workflows folder.
 
-            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            Branch        : ${{ github.head_ref || github.ref_name }}  
-            Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
-            Message     : ${{ github.event.head_commit.message }}
-            User            : ${{ github.triggering_actor }}
-            Date&Time  : ${{ steps.date.outputs.date }}
-            Commit link  : <a href="https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}">${{ steps.GitSHAAndPath.outputs.ShortID }}</a> 
+      #       -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      #       Branch        : ${{ github.head_ref || github.ref_name }}  
+      #       Commit       : ${{ steps.GitSHAAndPath.outputs.ShortID }}
+      #       Message     : ${{ github.event.head_commit.message }}
+      #       User            : ${{ github.triggering_actor }}
+      #       Date&Time  : ${{ steps.date.outputs.date }}
+      #       Commit link  : <a href="https://github.com/shatwarkn29/tuesday/commit/${{github.sha}}">${{ steps.GitSHAAndPath.outputs.ShortID }}</a> 
 
-            changed files  
-            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            ${{ steps.changed-files.outputs.contentpath }}
-            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      #       changed files  
+      #       -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      #       ${{ steps.changed-files.outputs.contentpath }}
+      #       -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
       # - name: Trigger Workflow
       #   uses: actions/github-script@v6 
@@ -122,32 +122,25 @@ jobs:
         id: check_files
         run: |
           echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD
           git diff --name-only HEAD^ HEAD > files.txt
-
+      
+          run_jobA=false
+          run_jobB=false
+      
           while IFS= read -r file
           do
             echo $file
-            if [[ $file = folderA/*  ]]; then
+            if [[ $file = folderA/* ]]; then
               echo "This modified file is under the 'folderA' folder."
-              echo "::set-output name=run_jobA::true" >> $GITHUB_OUTPUT
-              break
-            else
-              echo "::set-output name=run_jobA::false" >> $GITHUB_OUTPUT
-            fi 
-          done
-
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file = folderB/*  ]]; then
+              run_jobA=true
+            elif [[ $file = folderB/* ]]; then
               echo "This modified file is under the 'folderB' folder."
-              echo "::set-output name=run_jobB::true" >> $GITHUB_OUTPUT
-              break
-            else
-              echo "::set-output name=run_jobB::false" >> $GITHUB_OUTPUT
+              run_jobB=true
             fi 
-          done
+          done < files.txt
+      
+          echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
+          echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
 
       # - name: check modified files
       #   id: check_file
