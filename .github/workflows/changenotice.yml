@@ -134,7 +134,6 @@ jobs:
             else
               echo "::set-output name=run_job::false"
             fi
-          done &lt; files.txt
 
       - name: check modified files
         id: check_file
@@ -150,8 +149,7 @@ jobs:
               break
             else
               echo "::set-output name=run_job::false"
-            fi
-          done &lt; files.txt       
+            fi     
 
       - name: Run script if changes found.
         if: steps.check_files.outputs.run_job == 'true' 
