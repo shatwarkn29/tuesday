@@ -95,17 +95,17 @@ jobs:
             ${{ steps.changed-files.outputs.contentpath }}
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-      - name: Trigger Workflow
-        uses: actions/github-script@v6 
-        with:
-          github-token: ${{secrets.PAT_TOKEN}}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-            owner: 'shatwarkn29',
-            repo: 'tuesday',
-            workflow_id: 'Build.yml',
-            ref: 'trail'
-            })
+      # - name: Trigger Workflow
+      #   uses: actions/github-script@v6 
+      #   with:
+      #     github-token: ${{secrets.PAT_TOKEN}}
+      #     script: |
+      #       await github.rest.actions.createWorkflowDispatch({
+      #       owner: 'shatwarkn29',
+      #       repo: 'tuesday',
+      #       workflow_id: 'Build.yml',
+      #       ref: 'trail'
+      #       })
 
 
   Trigger-other-pipeline:
@@ -123,7 +123,7 @@ jobs:
         run: |
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD
-    
+          git diff --name-only HEAD^ HEAD > files.txt
           while IFS= read -r file
           do
             echo $file
@@ -133,12 +133,15 @@ jobs:
               break
             else
               echo "::set-output name=run_job::false"
+            fi 
+          done
 
       - name: check modified files
         id: check_file
         run: |
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD
+          git diff --name-only HEAD^ HEAD > files.txt
           while IFS= read -r file
           do
             echo $file
@@ -148,6 +151,8 @@ jobs:
               break
             else
               echo "::set-output name=run_job::false"  
+            fi
+          done
 
       - name: Run script if changes found.
         if: steps.check_files.outputs.run_job == 'true' 
