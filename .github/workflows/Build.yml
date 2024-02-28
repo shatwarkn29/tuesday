@@ -11,7 +11,7 @@ on:
         - trail
   
   repository_dispatch:
-    types: [Build-and-Test-React-App]
+    types: [Build-and-Test-React-App , eventName]
 
 jobs:
 
