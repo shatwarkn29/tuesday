@@ -143,7 +143,7 @@ jobs:
           echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobA == 'true' 
+        if: ${{ steps.check_files.outputs.run_jobA }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -156,7 +156,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobB == 'true' 
+        if: ${{ steps.check_files.outputs.run_jobB }} == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -167,4 +167,3 @@ jobs:
             workflow_id: 'sampleb.yml',
             ref: 'main'
             }) 
-            
