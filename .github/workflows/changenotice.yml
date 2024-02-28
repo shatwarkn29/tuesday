@@ -118,31 +118,48 @@ jobs:
         with:
           fetch-depth: 0   
       
-      # Check if there are changes in the specified path
-      - name: Check for changes in folderA
-        id: Afolder
+      - name: check modified files
+        id: check_files
         run: |
-          if git diff --exit-code -- folderA; then
-            echo "No changes detected in folderA."
-            exit 0
-          else
-            echo "Changes detected in folderA."
-            exit 1
-          fi
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+    
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD &gt; files.txt
+          while IFS= read -r file
+          do
+            echo $file
+            if [[ $file = folderA/* ]]; then
+              echo "This modified file is under the 'folderA' folder."
+              echo "::set-output name=run_job::true"
+              break
+            else
+              echo "::set-output name=run_job::false"
+            fi
+          done &lt; files.txt
 
-      - name: heck for changes in folderB
-        id: Bfolder
+      - name: check modified files
+        id: check_file
         run: |
-          if git diff --exit-code -- folderB; then
-            echo "No changes detected in folderB."
-            exit 0
-          else
-            echo "Changes detected in folderB."
-            exit 1
-          fi
+          echo "=============== list modified files ==============="
+          git diff --name-only HEAD^ HEAD
+    
+          echo "========== check paths of modified files =========="
+          git diff --name-only HEAD^ HEAD &gt; files.txt
+          while IFS= read -r file
+          do
+            echo $file
+            if [[ $file = folderB/* ]]; then
+              echo "This modified file is under the 'folderA' folder."
+              echo "::set-output name=run_job::true"
+              break
+            else
+              echo "::set-output name=run_job::false"
+            fi
+          done &lt; files.txt       
 
       - name: Run script if changes found.
-        if: steps.Afolder.outputs == 1
+        if: steps.check_files.outputs.run_job == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -155,7 +172,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: steps.Bfolder.outputs == 1
+        if: steps.check_file.outputs.run_job == 'true' 
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -163,6 +180,6 @@ jobs:
             await github.rest.actions.createWorkflowDispatch({
             owner: 'shatwarkn29',
             repo: 'tuesday',
-            workflow_id: 'samplea.yml',
+            workflow_id: 'sampleb.yml',
             ref: 'main'
             })
