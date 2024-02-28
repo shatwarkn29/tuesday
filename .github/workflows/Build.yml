@@ -2,6 +2,9 @@ name: Build and Test React App
 
 on:
   workflow_dispatch:
+  
+  repository_dispatch:
+    types: [trigger-event]
 
 jobs:
 
@@ -17,3 +20,6 @@ jobs:
         run: echo "The current date is ${{ steps.today.outputs.date }}"
       - name: Install NPM
         run: npm install
+      - name: dispatch trigger
+        run: |
+          echo "repository_dispatch triggered"
