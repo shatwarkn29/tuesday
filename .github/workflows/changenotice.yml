@@ -109,5 +109,5 @@ jobs:
             owner: 'shatwarkn29',
             repo: 'tuesday',
             workflow_id: 'Build.yml',
-            ref: 'masin'
+            ref: 'main'
             })
