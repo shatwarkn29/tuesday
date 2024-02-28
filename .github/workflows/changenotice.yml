@@ -124,32 +124,32 @@ jobs:
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD > files.txt
          
-          run_jobA="false"
-          run_jobB="false"
+          run_jobA=0
+          run_jobB=0
           
           while IFS= read -r file
           do
             echo $file
             if [[ $file = folderA/* ]]; then
               echo "This modified file is under the 'folderA' folder."
-              run_jobA="true"
+              run_jobA=1
             elif [[ $file = folderB/* ]]; then
               echo "This modified file is under the 'folderB' folder."
-              run_jobB="true"
+              run_jobB=1
             fi 
           echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
           echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
           done < files.txt
         
-          echo "$run_jobA , $run_jobB"
+          echo "$run_jobA , $run_jobB "
 
       - name: Checking values 
         run: |
-          echo "run_jobA value: "${{ steps.check_files.outputs.run_jobA }}" "
-          echo "run_jobB value: "${{ steps.check_files.outputs.run_jobB }}" "
+          echo "run_jobA value: '${{ steps.check_files.outputs.run_jobA }}' "
+          echo "run_jobB value: '${{ steps.check_files.outputs.run_jobB }}' "
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobA == 'true'
+        if: steps.check_files.outputs.run_jobA == 1
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -162,7 +162,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobB == 'true'
+        if: steps.check_files.outputs.run_jobB == 1
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
