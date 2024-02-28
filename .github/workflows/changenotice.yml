@@ -127,7 +127,7 @@ jobs:
           while IFS= read -r file
           do
             echo $file
-            if [[ $file = folderA/* ]]; then
+            if [[ $file = folderA/* ] || [ $file = folderB/* ] ]; then
               echo "This modified file is under the 'folderA' folder."
               echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
               break
@@ -136,23 +136,23 @@ jobs:
             fi 
           done
 
-      - name: check modified files
-        id: check_file
-        run: |
-          echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD
-          git diff --name-only HEAD^ HEAD > files.txt
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file = folderB/* ]]; then
-              echo "This modified file is under the 'folderA' folder."
-              echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
-              break
-            else
-              echo "::set-output name=run_job::false" >> $GITHUB_OUTPUT
-            fi
-          done
+      # - name: check modified files
+      #   id: check_file
+      #   run: |
+      #     echo "=============== list modified files ==============="
+      #     git diff --name-only HEAD^ HEAD
+      #     git diff --name-only HEAD^ HEAD > files.txt
+      #     while IFS= read -r file
+      #     do
+      #       echo $file
+      #       if [[ $file = folderB/* ]]; then
+      #         echo "This modified file is under the 'folderA' folder."
+      #         echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
+      #         break
+      #       else
+      #         echo "::set-output name=run_job::false" >> $GITHUB_OUTPUT
+      #       fi
+      #     done
 
       - name: Run script if changes found.
         if: ${{ steps.check_files.outputs.run_job }} == 'true' 
