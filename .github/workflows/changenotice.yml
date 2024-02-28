@@ -124,7 +124,7 @@ jobs:
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD
           git diff --name-only HEAD^ HEAD > files.txt
-          
+
           while IFS= read -r file
           do
             echo $file
@@ -191,4 +191,4 @@ jobs:
             repo: 'tuesday',
             workflow_id: 'sampleb.yml',
             ref: 'main'
-            })
+            }) 
