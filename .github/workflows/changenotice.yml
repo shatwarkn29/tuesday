@@ -122,12 +122,14 @@ jobs:
       - name: Check for changes in folderA
         id: Afolder
         run: |
-          git diff --name-only HEAD~ HEAD | grep -q 'folderA'
+          if ! git diff --quiet --exit-code folderA; then
+          exit 1
 
       - name: heck for changes in folderB
         id: Bfolder
         run: |
-          git diff --name-only HEAD~ HEAD | grep -q 'folderB' 
+          if ! git diff --quiet --exit-code folderB; then
+          exit 1
 
       - name: Run script if changes found.
         if: steps.Afolder.outputs == 1
