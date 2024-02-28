@@ -24,4 +24,3 @@ jobs:
         run: |
           echo "Input 1: ${{ github.event.client_payload.input1 }}"
           echo "Input 2: ${{ github.event.client_payload.input2 }}"
-          

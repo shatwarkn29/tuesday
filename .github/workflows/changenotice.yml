@@ -1,5 +1,4 @@
 name: Notify changes
-
 # **What it does**: Triggers on changes to .github/workflows, sends email with commit details to admin. 
 
 on:
