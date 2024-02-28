@@ -118,7 +118,7 @@ jobs:
         with:
           fetch-depth: 0   
       
-      - name: check modified files in folderA
+      - name: check modified files 
         id: check_files
         run: |
           echo "=============== list modified files ==============="
@@ -137,16 +137,16 @@ jobs:
               echo "This modified file is under the 'folderB' folder."
               run_jobB="true"
             fi 
-          done < files.txt
-      
           echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
           echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
+          done < files.txt
+        
           echo "$run_jobA , $run_jobB"
 
       - name: Checking values 
         run: |
-          echo "run_jobA value: ${{ steps.check_files.outputs.run_jobA }}"
-          echo "run_jobB value: ${{ steps.check_files.outputs.run_jobB }}"
+          echo "run_jobA value: "${{ steps.check_files.outputs.run_jobA }}" "
+          echo "run_jobB value: "${{ steps.check_files.outputs.run_jobB }}" "
 
       - name: Run script if changes found.
         if: steps.check_files.outputs.run_jobA == 'true'
