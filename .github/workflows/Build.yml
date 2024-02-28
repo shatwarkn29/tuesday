@@ -10,8 +10,7 @@ on:
         options: 
         - trail
   
-  repository_dispatch:
-    types: [Build-and-Test-React-App , eventName]
+  #repository_dispatch:
 
 jobs:
 
