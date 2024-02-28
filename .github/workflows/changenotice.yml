@@ -137,8 +137,8 @@ jobs:
               echo "This modified file is under the 'folderB' folder."
               run_jobB=1
             fi 
-          echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
-          echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
+          echo "::set-output name=run_jobA::$run_jobA" 
+          echo "::set-output name=run_jobB::$run_jobB" 
           done < files.txt
         
           echo "$run_jobA , $run_jobB "
