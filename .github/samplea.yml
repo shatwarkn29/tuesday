@@ -1,0 +1,16 @@
+name: SampleA
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Specify the runner environment
+
+    steps:
+      - uses: actions/checkout@v3  # Checkout code from the repository
+      - name: Run build script
+        run: |
+          # Replace with your specific build command(s)
+          npm install
+          npm run build
+
