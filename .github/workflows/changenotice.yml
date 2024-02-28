@@ -122,13 +122,13 @@ jobs:
       - name: Check for changes in folderA
         id: Afolder
         run: |
-          if ! git diff --quiet --exit-code folderA; then
+          if ! git diff --exit-code folderA; then
           exit 1
 
       - name: heck for changes in folderB
         id: Bfolder
         run: |
-          if ! git diff --quiet --exit-code folderB; then
+          if ! git diff --exit-code folderB; then
           exit 1
 
       - name: Run script if changes found.
