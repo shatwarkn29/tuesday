@@ -94,7 +94,7 @@ jobs:
       - name: Trigger the other pipeline 
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-          EVENT: trigger-event1
+          EVENT: Build-and-Test-React-App
           ORG: shatwarkn29
           REPO: tuesday
         run: |
