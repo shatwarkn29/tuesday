@@ -12,5 +12,5 @@ jobs:
         run: |
           # Replace with your specific build command(s)
           npm install
-          npm run build
+
 

@@ -124,6 +124,7 @@ jobs:
           echo "=============== list modified files ==============="
           git diff --name-only HEAD^ HEAD
           git diff --name-only HEAD^ HEAD > files.txt
+          
           while IFS= read -r file
           do
             echo $file
@@ -135,6 +136,7 @@ jobs:
               echo "::set-output name=run_job1::false" >> $GITHUB_OUTPUT
             fi 
           done
+
           while IFS= read -r file
           do
             echo $file
