@@ -127,7 +127,7 @@ jobs:
           while IFS= read -r file
           do
             echo $file
-            if [[ $file = folderA/* ] || [ $file = folderB/* ] ]; then
+            if [[ $file = folderA/*  ||  $file = folderB/* ] ]; then
               echo "This modified file is under the 'folderA' folder."
               echo "::set-output name=run_job::true" >> $GITHUB_OUTPUT
               break
