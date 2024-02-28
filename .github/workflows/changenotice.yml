@@ -95,16 +95,8 @@ jobs:
             ${{ steps.changed-files.outputs.contentpath }}
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    #  # - name: Trigger the other pipeline on conditions 
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-    #       EVENT: trigger-event
-    #       ORG: shatwarkn29
-    #       REPO: tuesday
-    #     run: |
-    #       curl -d "{\"event_type\": \"${EVENT}\"}" -H "Content-Type: application/json" -H "Authorization: token ${GITHUB_TOKEN}" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/${ORG}/${REPO}/dispatches"
       - name: Trigger Workflow
-        uses: actions/github-script@v7 
+        uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
           script: |
@@ -114,6 +106,8 @@ jobs:
             workflow_id: 'Build.yml',
             ref: 'trail'
             })
+
+
   Trigger-other-pipeline:
     permissions:
       contents: read
@@ -137,7 +131,7 @@ jobs:
 
       - name: Run script if changes found
         if: ${{steps.Afolder.outputs}} == 1
-        uses: actions/github-script@v7 
+        uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
           script: |
@@ -145,12 +139,12 @@ jobs:
             owner: 'shatwarkn29',
             repo: 'tuesday',
             workflow_id: 'samplea.yml',
-            ref: 'trail'
+            ref: 'main'
             })
 
       - name: Run script if changes found
         if: ${{steps.Bfolder.outputs}} == 1
-        uses: actions/github-script@v7 
+        uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
           script: |
@@ -158,5 +152,5 @@ jobs:
             owner: 'shatwarkn29',
             repo: 'tuesday',
             workflow_id: 'samplea.yml',
-            ref: 'trail'
+            ref: 'main'
             })
