@@ -135,6 +135,7 @@ jobs:
               echo "::set-output name=run_job1::false" >> $GITHUB_OUTPUT
             fi 
           done
+          while IFS= read -r file
           do
             echo $file
             if [[ $file = folderB/*  ]]; then
