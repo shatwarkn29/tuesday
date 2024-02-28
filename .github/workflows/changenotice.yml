@@ -3,7 +3,7 @@ name: Notify changes
 
 on:
   push:
-    branches: ['main']
+    branches: ['*']
     paths:
       - '.github/workflows/**'
   workflow_dispatch:
