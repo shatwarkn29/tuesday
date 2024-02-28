@@ -142,9 +142,14 @@ jobs:
           echo "::set-output name=run_jobA::$run_jobA" >> $GITHUB_OUTPUT
           echo "::set-output name=run_jobB::$run_jobB" >> $GITHUB_OUTPUT
           echo "$run_jobA , $run_jobB"
+          
+      - name: Checking values 
+        run: |
+          echo "run_jobA value: ${{ steps.check_files.outputs.run_jobA }}"
+          echo "run_jobB value: ${{ steps.check_files.outputs.run_jobB }}"
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobA == ''
+        if: steps.check_files.outputs.run_jobA == 'true'
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
@@ -157,7 +162,7 @@ jobs:
             })
 
       - name: Run script if changes found.
-        if: steps.check_files.outputs.run_jobB == ''
+        if: steps.check_files.outputs.run_jobB == 'true'
         uses: actions/github-script@v6 
         with:
           github-token: ${{secrets.PAT_TOKEN}}
