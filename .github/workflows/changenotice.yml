@@ -122,14 +122,24 @@ jobs:
       - name: Check for changes in folderA
         id: Afolder
         run: |
-          if ! git diff --exit-code folderA; then
-          exit 1
+          if git diff --quiet --exit-code -- folderA; then
+            echo "No changes detected in folderA."
+            exit 0
+          else
+            echo "Changes detected in folderA."
+            exit 1
+          fi
 
       - name: heck for changes in folderB
         id: Bfolder
         run: |
-          if ! git diff --exit-code folderB; then
-          exit 1
+          if git diff --quiet --exit-code -- folderB; then
+            echo "No changes detected in folderB."
+            exit 0
+          else
+            echo "Changes detected in folderB."
+            exit 1
+          fi
 
       - name: Run script if changes found.
         if: steps.Afolder.outputs == 1
