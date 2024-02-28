@@ -129,7 +129,7 @@ jobs:
         run: |
           git diff --name-only HEAD~ HEAD | grep -q 'folderB' 
 
-      - name: Run script if changes found
+      - name: Run script if changes found.
         if: steps.Afolder.outputs == 1
         uses: actions/github-script@v6 
         with:
@@ -142,7 +142,7 @@ jobs:
             ref: 'main'
             })
 
-      - name: Run script if changes found
+      - name: Run script if changes found.
         if: steps.Bfolder.outputs == 1
         uses: actions/github-script@v6 
         with:
