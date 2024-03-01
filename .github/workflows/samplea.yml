@@ -1,6 +1,6 @@
 name: SampleA
 on:
-  workflow_dispatch:
+  push: 
 
 jobs:
   build:
