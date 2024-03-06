@@ -1,12 +1,16 @@
-name: Notify changes
+name: Pull Request Merge 
 # **What it does**: Triggers on changes to .github/workflows ,folderA/** and folderB/**  , sends email with commit details to admin followed by triggering respective pipelines based on the change of files in the respective folder. 
 on:
-  pull_request:
+  push:
     branches:
       - Release
 
 permissions:
   contents: read
+
+env:
+    AUTHOR: ${{ github.event.pusher.name }}
+
 
 jobs: 
     Trigger_Pipeline_after_PR_merge:
