@@ -174,19 +174,19 @@ jobs:
             ref: 'main'
             }) 
 
-  Raise_a_PR: 
-    permissions:
-      contents: read
+  # Raise_a_PR: 
+  #   permissions:
+  #     contents: read
 
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
           
-      - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
-          AUTHOR: shatwarkn29
-        run: |
-          gh pr create -B Release -H main --title 'Raise a PR main branch into Release' --body 'Created by Github action'
+  #     - name: Create Pull Request
+  #       env:
+  #         GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+  #         AUTHOR: shatwarkn29
+  #       run: |
+  #         gh pr create -B Release -H main --title 'Raise a PR main branch into Release' --body 'Created by Github action'
