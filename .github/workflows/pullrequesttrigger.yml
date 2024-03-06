@@ -35,16 +35,25 @@ jobs:
             run: | 
               git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
 
-          - name: Fetch PR Number
+          - name: Fetch Commit Message
+            id: commit_message
+            run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      
+          - name: Extract PR Number
             id: pr_number
             run: |
-              echo "PR Number: ${{ github.event.number }}"
+                message="${{ steps.commit_message.outputs.message }}"
+                pr_number=$(echo "$message" | grep -oE '\(#([0-9]+)\)' | sed 's/[#()]//g' | head -n1)
+                echo "::set-output name=pr_number::$pr_number"
+    
+          - name: Print PR Number
+            run: echo "The PR number is ${{ steps.pr_number.outputs.pr_number }}"
 
           - name: check modified files 
             id: check_files
             run: |
               echo "=============== list modified files ==============="
-              git diff --name-only HEAD^ HEAD > files.txt
+              git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
               
               run_jobA=0
               run_jobB=0
