@@ -1,0 +1,113 @@
+name: Notify changes
+# **What it does**: Triggers on changes to .github/workflows ,folderA/** and folderB/**  , sends email with commit details to admin followed by triggering respective pipelines based on the change of files in the respective folder. 
+on:
+  pull_request:
+    branches:
+      - Release
+
+permissions:
+  contents: read
+
+jobs: 
+    Trigger_Pipeline_after_PR_merge:
+        permissions:
+          contents: read
+    
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+            with:
+              fetch-depth: 0
+    # Get the Current Date and Time
+          - name: Get current date time
+            id: date
+            run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+    
+    # Get the Git SHA
+          - name: "Get Git SHA"
+            id: GitSHAAndPath
+            run: |
+                echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+    
+    # get the path where the change has occured.
+          - name: Get changed files
+            id: changed-files
+            shell : pwsh
+            run: |
+                git config user.name "GitHubActions"
+                git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
+                $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
+                $path=""
+                $count=1
+                foreach ($filepath in $Changed_files) {
+                    echo "Processing: $filepath"
+                    $path+= "$count -> $filepath  "  
+                    $count+=1
+                } 
+                echo "::set-output name=contentpath::$path"
+                echo "::set-output name=pathchanged::$Changed_files"
+    
+    # Print the Commit details 
+          - name: Print Last Commit Details 
+            id: details
+            run: |
+                echo "Commit Hash: $GITHUB_SHA"
+                echo "Branch Name: $GITHUB_REF" 
+                echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"  
+    
+          - name: check modified files 
+            id: check_files
+            run: |
+              echo "=============== list modified files ==============="
+              git diff --name-only HEAD^ HEAD > files.txt
+              
+              run_jobA=0
+              run_jobB=0
+              
+              while IFS= read -r file
+              do
+                echo $file
+                if [[ $file = folderA/* ]]; then
+                  echo "This modified file is under the 'folderA' folder."
+                  run_jobA=1
+                elif [[ $file = folderB/* ]]; then
+                  echo "This modified file is under the 'folderB' folder."
+                  run_jobB=1
+                fi 
+              echo "::set-output name=run_jobA::$run_jobA" 
+              echo "::set-output name=run_jobB::$run_jobB" 
+              done < files.txt
+            
+              echo "$run_jobA , $run_jobB "
+            
+          - name: Checking values 
+            run: |
+              echo "run_jobA value: '${{ steps.check_files.outputs.run_jobA }}' "
+              echo "run_jobB value: '${{ steps.check_files.outputs.run_jobB }}' "
+    
+          - name: Run script if changes found.
+            if: steps.check_files.outputs.run_jobA == 1
+            uses: actions/github-script@v6 
+            with:
+              github-token: ${{secrets.PAT_TOKEN}}
+              script: |
+                await github.rest.actions.createWorkflowDispatch({
+                owner: 'shatwarkn29',
+                repo: 'tuesday',
+                workflow_id: 'samplea.yml',
+                ref: 'Release'
+                })
+    
+          - name: Run script if changes found.
+            if: steps.check_files.outputs.run_jobB == 1
+            uses: actions/github-script@v6 
+            with:
+              github-token: ${{secrets.PAT_TOKEN}}
+              script: |
+                await github.rest.actions.createWorkflowDispatch({
+                owner: 'shatwarkn29',
+                repo: 'tuesday',
+                workflow_id: 'sampleb.yml',
+                ref: 'Release'
+                }) 
+    
