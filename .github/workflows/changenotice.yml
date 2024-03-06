@@ -19,6 +19,9 @@ on:
                 - '.github/workflows/**'   
                 - 'folderA/**'
                 - 'folderB/**'
+  pull_request:
+    branches:
+      - Release
 
 permissions:
   contents: read
@@ -95,17 +98,17 @@ jobs:
             ${{ steps.changed-files.outputs.contentpath }}
             -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-      - name: Trigger Workflow
-        uses: actions/github-script@v6 
-        with:
-          github-token: ${{secrets.PAT_TOKEN}}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-            owner: 'shatwarkn29',
-            repo: 'tuesday',
-            workflow_id: 'Build.yml',
-            ref: 'trail'
-            })
+      # - name: Trigger Workflow
+      #   uses: actions/github-script@v6 
+      #   with:
+      #     github-token: ${{secrets.PAT_TOKEN}}
+      #     script: |
+      #       await github.rest.actions.createWorkflowDispatch({
+      #       owner: 'shatwarkn29',
+      #       repo: 'tuesday',
+      #       workflow_id: 'Build.yml',
+      #       ref: 'trail'
+      #       })
 
 
   Trigger-other-pipeline:
@@ -173,3 +176,20 @@ jobs:
             workflow_id: 'sampleb.yml',
             ref: 'main'
             }) 
+
+  Raise_a_PR: 
+    permissions:
+      contents: read
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
+          AUTHOR: shatwarkn29
+        run: |
+          gh pr create -B Release -H main --title 'Merge main branch into Release' --body 'Created by Github action'
