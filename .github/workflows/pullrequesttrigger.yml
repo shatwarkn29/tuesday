@@ -34,31 +34,16 @@ jobs:
                 echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
     
     # get the path where the change has occured.
-          - name: Get changed files
+          - name: Get changes
             id: changed-files
-            shell : pwsh
+            run: git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+
+          - name: List changed files
             run: |
-                git config user.name "GitHubActions"
-                git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6 
-                $Changed_files = $(git show --name-only ${{ steps.GitSHAAndPath.outputs.ShortID }} | Select-Object -Skip 6)
-                $path=""
-                $count=1
-                foreach ($filepath in $Changed_files) {
-                    echo "Processing: $filepath"
-                    $path+= "$count -> $filepath  "  
-                    $count+=1
-                } 
-                echo "::set-output name=contentpath::$path"
-                echo "::set-output name=pathchanged::$Changed_files"
-    
-    # Print the Commit details 
-          - name: Print Last Commit Details 
-            id: details
-            run: |
-                echo "Commit Hash: $GITHUB_SHA"
-                echo "Branch Name: $GITHUB_REF" 
-                echo "Changed File: '${{steps.changed-files.outputs.pathchanged}}'"  
-    
+                for file in ${{ steps.changed-files.outputs.changed_files }}; do
+                    echo "$file was changed"
+                done
+
           - name: check modified files 
             id: check_files
             run: |
