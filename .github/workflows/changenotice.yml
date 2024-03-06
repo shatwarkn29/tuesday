@@ -19,9 +19,6 @@ on:
                 - '.github/workflows/**'   
                 - 'folderA/**'
                 - 'folderB/**'
-  pull_request:
-    branches:
-      - Release
 
 permissions:
   contents: read
@@ -192,4 +189,4 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
           AUTHOR: shatwarkn29
         run: |
-          gh pr create -B Release -H main --title 'Merge main branch into Release' --body 'Created by Github action'
+          gh pr create -B Release -H main --title 'Raise a PR main branch into Release' --body 'Created by Github action'
