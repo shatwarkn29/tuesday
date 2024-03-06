@@ -36,7 +36,9 @@ jobs:
     # get the path where the change has occured.
           - name: Get changes
             id: changed-files
-            run: git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+            run: | 
+              git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+              git diff --name-only HEAD^ HEAD
 
           - name: List changed files
             run: |
