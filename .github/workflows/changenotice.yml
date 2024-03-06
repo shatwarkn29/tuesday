@@ -189,11 +189,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      
-    
-      - name: Install GithubCLI 
+          
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN_THURSDAY }}
+          AUTHOR: shatwarkn29
         run: |
-         gh pr create -B Release -H main --title 'Merge main branch into Release' --body 'Created by Github action'
+          gh pr create -B Release -H main --title 'Merge main branch into Release' --body 'Created by Github action'
   
   Trigger_Pipeline_after_PR_merge:
     if: github.event_name == 'pull_request'
