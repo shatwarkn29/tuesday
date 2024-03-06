@@ -192,7 +192,7 @@ jobs:
           
       - name: Create Pull Request
         env:
-          GH_TOKEN: ${{ secrets.TOKEN_THURSDAY }}
+          GH_TOKEN: ${{ secrets.GITHUBTOKEN }}
           AUTHOR: shatwarkn29
         run: |
           gh pr create -B Release -H main --title 'Merge main branch into Release' --body 'Created by Github action'
