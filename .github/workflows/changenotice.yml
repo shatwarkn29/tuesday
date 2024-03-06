@@ -19,9 +19,6 @@ on:
                 - '.github/workflows/**'   
                 - 'folderA/**'
                 - 'folderB/**'
-  pull_request:
-    branches:
-      - Release
 
 permissions:
   contents: read
