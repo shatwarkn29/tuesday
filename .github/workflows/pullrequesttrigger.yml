@@ -38,13 +38,6 @@ jobs:
             id: changed-files
             run: | 
               git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
-              git diff --name-only HEAD^ HEAD
-
-          - name: List changed files
-            run: |
-                for file in ${{ steps.changed-files.outputs.changed_files }}; do
-                    echo "$file was changed"
-                done
 
           - name: check modified files 
             id: check_files

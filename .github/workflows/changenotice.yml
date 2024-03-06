@@ -4,9 +4,8 @@ name: Notify changes
 on:
   push:
     branches: ['main']
-    paths:
-      - 'folderA/**'
-      - 'folderB/**'
+    paths-ignore:
+      - '.github/workflows/**'
 
   
   workflow_dispatch:
@@ -15,9 +14,11 @@ on:
             type: choice
             required: true
             description: "Pipeline Run Path"
-            options:  
+            options: 
+                - '.github/workflows/**'   
                 - 'folderA/**'
                 - 'folderB/**'
+        
 
 permissions:
   contents: read
