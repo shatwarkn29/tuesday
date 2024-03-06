@@ -35,6 +35,11 @@ jobs:
             run: | 
               git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
 
+          - name: Fetch PR Number
+            id: pr_number
+            run: |
+              echo "PR Number: ${{ github.event.number }}"
+
           - name: check modified files 
             id: check_files
             run: |
