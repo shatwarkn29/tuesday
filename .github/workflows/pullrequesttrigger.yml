@@ -8,10 +8,6 @@ on:
 permissions:
   contents: read
 
-env:
-    AUTHOR: ${{ github.event.pusher.name }}
-
-
 jobs: 
     Trigger_Pipeline_after_PR_merge:
         permissions:
