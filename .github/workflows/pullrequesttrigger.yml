@@ -1,7 +1,5 @@
-name: Pull Request Merge
-# What it does: Triggers on changes to .github/workflows, folderA/** and folderB/**,
-# sends email with commit details to admin followed by triggering respective pipelines
-# based on the change of files in the respective folder.
+name: Pull Request Merge 
+# **What it does**: Triggers on changes to .github/workflows ,folderA/** and folderB/**  , sends email with commit details to admin followed by triggering respective pipelines based on the change of files in the respective folder. 
 on:
   push:
     branches:
@@ -10,91 +8,102 @@ on:
 permissions:
   contents: read
 
-jobs:
-  trigger-pipeline-after-pr-merge:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+jobs: 
+    Trigger_Pipeline_after_PR_merge:
+        permissions:
+          contents: read
+    
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v3
+            with:
+              fetch-depth: 0
+    # Get the Current Date and Time
+          - name: Get current date time
+            id: date
+            run: echo "::set-output name=date::$(date +'%Y-%m-%dT%H:%M:%S')"
+    
+    # Get the Git SHA
+          - name: "Get Git SHA"
+            id: GitSHAAndPath
+            run: |
+                echo "ShortID=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+    
+    # get the path where the change has occured.
+          - name: Get changes
+            id: changed-files
+            run: | 
+              git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
 
-      - name: Get current date time
-        id: date
-        run: echo "DATE_TIME=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+          - name: Fetch Commit Message
+            id: commit_message
+            run: echo "::set-output name=message::$(git log --format=%B -n 1 HEAD)"
+      
+          - name: Extract PR Number
+            id: pr_number
+            run: |
+                message="${{ steps.commit_message.outputs.message }}"
+                pr_number=$(echo "$message" | grep -oE '#[0-9]+' | sed 's/#//' | head -n1)
+                echo "::set-output name=pr_number::$pr_number"
+    
+          - name: Print PR Number and Link to PR to see the files changed. 
+            run: |
+               echo "The PR number is ${{ steps.pr_number.outputs.pr_number }}"
+               echo " https://github.com/shatwarkn29/tuesday/pull/${{ steps.pr_number.outputs.pr_number }}/files "
 
-      - name: Get Git SHA
-        id: GitSHAAndPath
-        run: echo "SHORT_ID=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
-      - name: Get changes
-        id: changed-files
-        run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
-
-      - name: Fetch Commit Message
-        id: commit_message
-        run: echo "MESSAGE=$(git log --format=%B -n 1 HEAD)" >> $GITHUB_ENV
-
-      - name: Extract PR Number
-        id: pr_number
-        run: |
-          MESSAGE="${{ env.MESSAGE }}"
-          PR_NUMBER=$(echo "$MESSAGE" | grep -oE '#[0-9]+' | sed 's/#//' | head -n1)
-          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
-
-      - name: Print PR Number and Link to PR to see the files changed
-        run: |
-          echo "The PR number is ${{ env.PR_NUMBER }}"
-          echo "https://github.com/shatwarkn29/tuesday/pull/${{ env.PR_NUMBER }}/files"
-
-      - name: Check modified files
-        id: check_files
-        run: |
-          echo "=============== list modified files ==============="
-          while IFS= read -r fil
-          do
-            echo $fil
-            if [[ $fil = folderA/* ]]; then
-              echo "This modified file is under the 'folderA' folder."
-              echo "::set-env name=run_jobA::1"
-            elif [[ $fil = folderB/* ]]; then
-              echo "This modified file is under the 'folderB' folder."
-              echo "::set-env name=run_jobB::1"
-            fi
-          done < files.txt
-          echo "run_jobA=${{ env.run_jobA }}" >> $GITHUB_ENV
-          echo "run_jobB=${{ env.run_jobB }}" >> $GITHUB_ENV
-
-      - name: Checking values
-        run: |
-          echo "run_jobA value: ${{ env.run_jobA }}"
-          echo "run_jobB value: ${{ env.run_jobB }}"
-
-      - name: Run script if changes found in folderA
-        if: env.run_jobA == '1'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'shatwarkn29',
-              repo: 'tuesday',
-              workflow_id: 'samplea.yml',
-              ref: 'Release'
-            })
-
-      - name: Run script if changes found in folderB
-        if: env.run_jobB == '1'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PAT_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'shatwarkn29',
-              repo: 'tuesday',
-              workflow_id: 'sampleb.yml',
-              ref: 'Release'
-            })
+          - name: check modified files 
+            id: check_files
+            run: |
+              echo "=============== list modified files ==============="
+              git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
+              
+              run_jobA=0
+              run_jobB=0
+              
+              while IFS= read -r fil
+              do
+                echo $fil
+                if [[ $fil = folderA/* ]]; then
+                  echo "This modified file is under the 'folderA' folder."
+                  run_jobA=1
+                elif [[ $fil = folderB/* ]]; then
+                  echo "This modified file is under the 'folderB' folder."
+                  run_jobB=1
+                fi 
+              echo "::set-output name=run_jobA::$run_jobA" 
+              echo "::set-output name=run_jobB::$run_jobB" 
+              done < files.txt
+            
+              echo "$run_jobA , $run_jobB "
+            
+          - name: Checking values 
+            run: |
+              echo "run_jobA value: '${{ steps.check_files.outputs.run_jobA }}' "
+              echo "run_jobB value: '${{ steps.check_files.outputs.run_jobB }}' "
+    
+          - name: Run script if changes found.
+            if: steps.check_files.outputs.run_jobA == 1
+            uses: actions/github-script@v6 
+            with:
+              github-token: ${{secrets.PAT_TOKEN}}
+              script: |
+                await github.rest.actions.createWorkflowDispatch({
+                owner: 'shatwarkn29',
+                repo: 'tuesday',
+                workflow_id: 'samplea.yml',
+                ref: 'Release'
+                })
+    
+          - name: Run script if changes found.
+            if: steps.check_files.outputs.run_jobB == 1
+            uses: actions/github-script@v6 
+            with:
+              github-token: ${{secrets.PAT_TOKEN}}
+              script: |
+                await github.rest.actions.createWorkflowDispatch({
+                owner: 'shatwarkn29',
+                repo: 'tuesday',
+                workflow_id: 'sampleb.yml',
+                ref: 'Release'
+                }) 
+    
