@@ -82,7 +82,7 @@ jobs:
     name: "Deploy to Sitecore CMS"
     needs: [Collect-Deployment-Data]
     if: |
-        always() && ( ${{needs.Collect-Deployment-Data.outputs.DeployToCMS }} == '1')
+        always() && ${{ needs.Collect-Deployment-Data.outputs.DeployToCMS }}
     runs-on: ubuntu-latest
     permissions:
       contents: read # for actions/checkout to fetch code
@@ -103,9 +103,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Collect-Deployment-Data ,deploy-to-cms]
     if: |
-      always() && (${{needs.Collect-Deployment-Data.outputs.DeployToProStore }}== '1') && 
-      (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
-
+        always() && ${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }} &&
+        (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
     # environment:
     #   name: Quality
 
@@ -122,9 +121,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Collect-Deployment-Data ,deploy-to-cms,deploy-to-pro-store]
     if: |
-      always() && (${{needs.Collect-Deployment-Data.outputs.DeployToFirstAlert}}== '1') &&
-      (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped') &&
-      (needs.deploy-to-pro-store.result == 'success' || needs.deploy-to-pro-store.result == 'skipped')
+        always() && ${{ needs.Collect-Deployment-Data.outputs.DeployToFirstAlert }} &&
+        (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped') &&
+        (needs.deploy-to-pro-store.result == 'success' || needs.deploy-to-pro-store.result == 'skipped')
 
     # environment:
     #   name: Quality
