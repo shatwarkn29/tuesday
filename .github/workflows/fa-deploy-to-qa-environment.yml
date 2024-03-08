@@ -96,6 +96,7 @@ jobs:
     - name: Confirm DeployToCMS is working 
       run: |
         echo "The DeployToCMS job is working properly"
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToCMS}}"
 
   deploy-to-pro-store:
     name: "Deploy to ProStore"
@@ -114,6 +115,7 @@ jobs:
     - name:  Confirm DeployToProStore is working 
       run: |
         echo "The DeployToProStore job is working properly"
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
 
   deploy-to-first-alert:
     name: "Deploy to FirstAlert"
@@ -133,3 +135,4 @@ jobs:
     - name: Confirm DeployToFirstAlert is working 
       run: |
         echo " The DeployToFirstAlert job is working Properly" 
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}""
