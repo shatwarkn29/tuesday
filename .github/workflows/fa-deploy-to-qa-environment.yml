@@ -55,14 +55,14 @@ jobs:
         
         while IFS= read -r file
         do
-            echo "$file"
-            if [[ $file == src/platform/* || $file == src/items/* ]]; then
-                DeployToCMS=1
-            if [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
-                DeployToProStore=1
-            if [[ $file == src/firstalert/* ]]; then
-                DeployToFirstAlert=1
-            fi
+          echo "$file"
+          if [[ $file == src/platform/* || $file == src/items/* ]]; then
+            DeployToCMS=1
+          elif [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
+            DeployToProStore=1
+          elif [[ $file == src/firstalert/* ]]; then
+            DeployToFirstAlert=1
+          fi
         done < files.txt
         
         echo "::set-output name=DeployToCMS::$DeployToCMS"
