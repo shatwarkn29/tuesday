@@ -48,19 +48,19 @@ jobs:
         echo "=============== list modified files ==============="
         git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
         
-        DeployToCMS=false
-        DeployToProStore=false
-        DeployToFirstAlert=false
+        DeployToCMS='false'
+        DeployToProStore='false'
+        DeployToFirstAlert='false'
         
         while IFS= read -r file
         do
           echo "$file"
           if [[ $file == src/platform/* || $file == src/items/* ]]; then
-            DeployToCMS=true
+            DeployToCMS='true'
           elif [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
-            DeployToProStore=true
+            DeployToProStore='true'
           elif [[ $file == src/firstalert/* ]]; then
-            DeployToFirstAlert=true
+            DeployToFirstAlert='true'
           fi
         done < files.txt
 
