@@ -23,10 +23,7 @@ permissions:
 jobs:
   Collect-Deployment-Data:
     name: "Collect Deployment Data"
-    if: |
-      always() && 
-      (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed'))
-    runs-on: prostore-actions-runner
+    runs-on: ubuntu-latest
     
     outputs:
       DeployToCMS: ${{ steps.check_files.outputs.DeployToCMS }}
@@ -45,27 +42,32 @@ jobs:
     - name: check modified files 
       id: check_files
       run: |
-          echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD > files.txt
-          DeployToCMS = false
-          DeployToProStore = false
-          DeployToFirstAlert = false 
-          
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file =  src/platform/* ] || [ $file = src/items/*]]; then
-              DeployToCMS = true
-            elif [[ $file =  src/rendering/* ] || [ $file = src/resideo-persisted-queries-client/*]]; then
-              DeployToProStore = true
-            elif [[ $file =  src/firstalert/* ]]; then
-              DeployToFirstAlert = true
-            fi 
-          echo "::set-output name=DeployToCMS::$DeployToCMS" 
-          echo "::set-output name=DeployToProStore::$DeployToProStore" 
-          echo "::set-output name=DeployToFirstAlert::$DeployToFirstAlert" 
-          done < files.txt
-          echo "$DeployToCMS , $DeployToProStore , $DeployToFirstAlert "
+        echo "=============== list modified files ==============="
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }}> files.txt
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+        
+        DeployToCMS=false
+        DeployToProStore=false
+        DeployToFirstAlert=false
+        
+        while IFS= read -r file
+        do
+            echo "$file"
+            if [[ $file == src/platform/* || $file == src/items/* ]]; then
+                DeployToCMS=true
+            elif [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
+                DeployToProStore=true
+            elif [[ $file == src/firstalert/* ]]; then
+                DeployToFirstAlert=true
+            fi
+        done < files.txt
+        
+        echo "::set-output name=DeployToCMS::$DeployToCMS"
+        echo "::set-output name=DeployToProStore::$DeployToProStore"
+        echo "::set-output name=DeployToFirstAlert::$DeployToFirstAlert"
+        
+        echo "$DeployToCMS , $DeployToProStore , $DeployToFirstAlert"
+        
           
     - name: Checking values 
       run: |
@@ -78,7 +80,7 @@ jobs:
     needs: [Collect-Deployment-Data]
     if: |
         always() && (needs.Collect-Deployment-Data.outputs.DeployToCMS == 'true')
-    runs-on: prostore-actions-runner
+    runs-on: ubuntu-latest
     permissions:
       contents: read # for actions/checkout to fetch code
       pull-requests: write # for Azure/static-web-apps-deploy to comment on PRs
