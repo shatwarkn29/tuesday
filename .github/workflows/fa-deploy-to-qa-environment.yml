@@ -110,7 +110,7 @@ jobs:
     - name:  Confirm DeployToProStore is working 
       run: |
         echo "The DeployToProStore job is working properly"
-        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}""
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
 
   deploy-to-first-alert:
     name: "Deploy to FirstAlert"
@@ -129,7 +129,7 @@ jobs:
     - name: Confirm DeployToFirstAlert is working 
       run: |
         echo " The DeployToFirstAlert job is working Properly" 
-        echo "${{needs.Collect-Deployment-Data.outputs.DeployToFirstAlert}}""
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToFirstAlert}}"
 
   No-Deploy:
     name: "No deployment"
@@ -137,10 +137,7 @@ jobs:
     needs: [Collect-Deployment-Data , deploy-to-cms , deploy-to-pro-store , deploy-to-first-alert]
     if: |
         always() && ( needs.deploy-to-cms.result == 'skipped') &&
-        (needs.deploy-to-pro-store.result == 'skipped') && ( needs.deploy-to-first-alert.result == 'skipped') &&
-        (needs.deploy-to-cms.result == 'failure' ) && 
-        (needs.deploy-to-pro-store.result == 'failure' )&&
-        (needs.deploy-to-first-alert.result == 'failure')
+        (needs.deploy-to-pro-store.result == 'skipped') && ( needs.deploy-to-first-alert.result == 'skipped') 
     # environment:
     #   name: Quality
 
