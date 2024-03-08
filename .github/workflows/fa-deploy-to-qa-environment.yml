@@ -135,4 +135,4 @@ jobs:
     - name: Confirm DeployToFirstAlert is working 
       run: |
         echo " The DeployToFirstAlert job is working Properly" 
-        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}""
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
