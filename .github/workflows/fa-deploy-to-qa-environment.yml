@@ -46,43 +46,39 @@ jobs:
       id: check_files
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only HEAD~1 HEAD > files.txt
-        git diff --name-only HEAD~1 HEAD
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
         
-        DeployToCMS=0
-        DeployToProStore=0
-        DeployToFirstAlert=0
+        DeployToCMS = false
+        DeployToProStore = false
+        DeployToFirstAlert = false
         
         while IFS= read -r file
         do
           echo "$file"
           if [[ $file == src/platform/* || $file == src/items/* ]]; then
-            DeployToCMS=1
+            DeployToCMS = true
           elif [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
-            DeployToProStore=1
+            DeployToProStore = true
           elif [[ $file == src/firstalert/* ]]; then
-            DeployToFirstAlert=1
+            DeployToFirstAlert = true
           fi
         done < files.txt
-        
+
         echo "::set-output name=DeployToCMS::$DeployToCMS"
         echo "::set-output name=DeployToProStore::$DeployToProStore"
         echo "::set-output name=DeployToFirstAlert::$DeployToFirstAlert"
-        
-        echo "$DeployToCMS , $DeployToProStore , $DeployToFirstAlert"
-        
           
     - name: Checking values 
       run: |
-          echo "DeployToCMS value: '${{ steps.check_files.outputs.DeployToCMS }}' "
-          echo "DeployToProStore value: '${{ steps.check_files.outputs.DeployToProStore }}' "
-          echo "DeployToFirstAlert value: '${{ steps.check_files.outputs.DeployToFirstAlert }}' "
+          echo "DeployToCMS : '${{ steps.check_files.outputs.DeployToCMS }}' "
+          echo "DeployToProStore : '${{ steps.check_files.outputs.DeployToProStore }}' "
+          echo "DeployToFirstAlert : '${{ steps.check_files.outputs.DeployToFirstAlert }}' "
 
   deploy-to-cms:
     name: "Deploy to Sitecore CMS"
     needs: [Collect-Deployment-Data]
     if: |
-        always() && ( needs.Collect-Deployment-Data.outputs.DeployToCMS == 1 )
+        always() && ( needs.Collect-Deployment-Data.outputs.DeployToCMS )
     runs-on: ubuntu-latest
     permissions:
       contents: read # for actions/checkout to fetch code
@@ -103,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Collect-Deployment-Data ,deploy-to-cms]
     if: |
-        always() && ( needs.Collect-Deployment-Data.outputs.DeployToProStore == 1) && 
+        always() && ( needs.Collect-Deployment-Data.outputs.DeployToProStore ) && 
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
     # environment:
     #   name: Quality
@@ -121,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Collect-Deployment-Data ,deploy-to-cms,deploy-to-pro-store]
     if: |
-        always() && ( needs.Collect-Deployment-Data.outputs.DeployToFirstAlert == 1 ) &&
+        always() && ( needs.Collect-Deployment-Data.outputs.DeployToFirstAlert ) &&
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped') &&
         (needs.deploy-to-pro-store.result == 'success' || needs.deploy-to-pro-store.result == 'skipped')
     # environment:
@@ -134,3 +130,20 @@ jobs:
       run: |
         echo " The DeployToFirstAlert job is working Properly" 
         echo "${{needs.Collect-Deployment-Data.outputs.DeployToFirstAlert}}"
+
+  No-Deploy:
+    name: "No deployment"
+    runs-on: ubuntu-latest
+    needs: [Collect-Deployment-Data , deploy-to-cms , deploy-to-pro-store , deploy-to-first-alert]
+    if: |
+        always() && ( needs.deploy-to-cms.result == 'skipped') &&
+        ( needs.deploy-to-pro-store.result == 'skipped') && ( needs.deploy-to-first-alert.result == 'skipped')
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Print the No Deploymemt
+      run: |
+        echo "There was no Deployment"
