@@ -73,16 +73,15 @@ jobs:
       if: ${{ github.event.inputs.DeployToCMS == 'Auto' }}
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only Head^ Head > files.txt
-        git diff --name-only Head^ Head
+        git diff --name-only HEAD^ HEAD > files.txt
+        git diff --name-only HEAD^ HEAD
+        Deploytocms='false'
 
         while IFS= read -r file
         do
           echo "$file"
           if [[ $file == src/platform/* || $file == src/items/* ]]; then
             Deploytocms='true'
-          else
-            Deploytocms='false'
           fi
         done < files.txt
 
@@ -93,17 +92,15 @@ jobs:
       if: ${{ github.event.inputs.DeployToProStore == 'Auto' }} 
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only Head^ Head > files.txt
-        git diff --name-only Head^ Head
+        git diff --name-only HEAD^ HEAD > files.txt
+        git diff --name-only HEAD^ HEAD
+        Deploytoprostore='false'
 
         while IFS= read -r file
         do
           echo "$file"
           if [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
             Deploytoprostore='true'
-          else
-            Deploytoprostore='false'
-          
           fi
         done < files.txt
 
@@ -114,16 +111,16 @@ jobs:
       if: ${{ github.event.inputs.DeployToFirstAlert == 'Auto' }}
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only Head^ Head > files.txt
-        git diff --name-only Head^ Head
+        git diff --name-only HEAD^ HEAD > files.txt
+        git diff --name-only HEAD^ HEAD
+
+        Deploytofirstalert='false'
 
         while IFS= read -r file
         do
           echo "$file"
           if [[ $file == src/firstalert/* ]]; then
             Deploytofirstalert='true'
-          else
-            Deploytofirstalert='false'
           fi
         done < files.txt
 
