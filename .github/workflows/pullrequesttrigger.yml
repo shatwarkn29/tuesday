@@ -4,7 +4,9 @@ on:
   push:
     branches:
       - Release
-
+    paths-ignore:
+      - '.github/**'
+      
 permissions:
   contents: read
 
