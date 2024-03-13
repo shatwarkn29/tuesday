@@ -1,0 +1,211 @@
+name: fa-deploy-to-qa-environment
+# **What it does**: On git push to release branch, it deploys release branch code to QA environment both for Sitecore CMS and Vercel.
+on:
+  workflow_dispatch:
+    inputs:
+      Environment:
+        type: choice
+        #required: true
+        description: "Deployment Environment"
+        options: 
+        - Dev
+      DeployToCMS:
+        description: "Deploy to Sitecore CMS"
+        type: choice
+        #required: true
+        options:
+        - Auto
+        - Force
+      DeployToProStore:
+        description: "Deploy to ProStore"
+        type: choice
+        #required: true
+        options:
+        - Auto
+        - Force
+      DeployToFirstAlert:
+        description: "Deploy to FirstAlert"
+        type: choice
+        #required: true
+        options:
+        - Auto
+        - Force     
+# env:
+#   GitBranch: 'release'
+#   APP_LOCATION: '/' # location of your client code
+#   GITHUB_CONTEXT: ${{ toJson(github) }}  
+#   ACR_CD_IMAGE: ${{ secrets.REGISTRY_URI }}/${{ secrets.ACR_CD_IMAGE }}
+#   ACR_CM_IMAGE: ${{ secrets.REGISTRY_URI }}/${{ secrets.ACR_CM_IMAGE }}
+#   ACR_ID_IMAGE: ${{ secrets.REGISTRY_URI }}/${{ secrets.ACR_ID_IMAGE }}
+#   NEW_IMAGE_TAG: $("${{ github.sha }}".SubString(0, 7))
+env:
+    Environment: ${{ inputs.Environment }}
+    DeployToCMS: ${{ inputs.DeployToCMS }}
+    DeployToProStore: ${{ inputs.DeployToProStore }}
+    DeployToFirstAlert: ${{ inputs.DeployToFirstAlert }}
+
+permissions:
+    contents: read
+
+jobs:
+  Collect-Deployment-Data:
+    name: "Collect Deployment Data"
+    runs-on: ubuntu-latest
+    
+    outputs:
+      Deploytocms: ${{ steps.check_files_cms.outputs.Deploytocms }}
+      Deploytoprostore: ${{ steps.check_files_prostore.outputs.Deploytoprostore }}
+      Deploytofirstalert: ${{ steps.check_files_firstalert.outputs.Deploytofirstalert }}
+      
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      pull-requests: write # for Azure/static-web-apps-deploy to comment on PRs
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: check modified files for cms 
+      id: check_files_cms
+      if: ${{ github.event.inputs.DeployToCMS == 'Auto' }}
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
+        
+        while IFS= read -r file
+        do
+          echo "$file"
+          if [[ $file == src/platform/* || $file == src/items/* ]]; then
+            Deploytocms='true'
+          else
+            Deploytocms='false'
+          fi
+        done < files.txt
+
+        echo "::set-output name=Deploytocms::$Deploytocms"
+ 
+    - name: check modified files for ProStore
+      id: check_files_prostore
+      if: ${{ github.event.inputs.DeployToProStore == 'Auto' }} 
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
+        
+        while IFS= read -r file
+        do
+          echo "$file"
+          if [[ $file == src/rendering/* || $file == src/resideo-persisted-queries-client/* ]]; then
+            Deploytoprostore='true'
+          else
+            Deploytoprostore='false'
+          
+          fi
+        done < files.txt
+
+        echo "::set-output name=Deploytoprostore::$Deploytoprostore"
+        
+    - name: check modified files for FirstAlert
+      id: check_files_firstalert
+      if: ${{ github.event.inputs.DeployToFirstAlert == 'Auto' }}
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
+        
+        while IFS= read -r file
+        do
+          echo "$file"
+          if [[ $file == src/firstalert/* ]]; then
+            Deploytofirstalert='true'
+          else
+            Deploytofirstalert='false'
+          fi
+        done < files.txt
+
+        echo "::set-output name=Deploytofirstalert::$Deploytofirstalert"
+
+          
+    - name: Checking values 
+      run: |
+          echo "DeployToCMS : '${{ steps.check_files_cms.outputs.Deploytocms }}' "
+          echo "DeployToProStore : '${{ steps.check_files_prostore.outputs.Deploytoprostore }}' "
+          echo "DeployToFirstAlert : '${{ steps.check_files_firstalert.outputs.Deploytofirstalert }}' "
+
+  deploy-to-cms:
+    name: "Deploy to Sitecore CMS"
+    needs: [Collect-Deployment-Data]
+    if: |
+      always() &&
+      (( github.event.inputs.DeployToCMS  == 'Force' ) || ( needs.Collect-Deployment-Data.outputs.Deploytocms == 'true' ))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      pull-requests: write # for Azure/static-web-apps-deploy to comment on PRs
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Confirm DeployToCMS is working 
+      run: |
+        echo "The DeployToCMS job is working properly"
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToCMS}}"
+
+  deploy-to-pro-store:
+    name: "Deploy to prostore"
+    runs-on: ubuntu-latest
+    needs: [Collect-Deployment-Data ,deploy-to-cms]
+    if: |
+        always() &&
+        ((github.event.inputs.DeployToProStore  == 'Force') ||( needs.Collect-Deployment-Data.outputs.Deploytocms == 'true' ) )&&
+        (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
+
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name:  Confirm DeployToProStore is working 
+      run: |
+        echo "The DeployToProStore job is working properly"
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
+
+  deploy-to-first-alert:
+    name: "Deploy to firstalert"
+    runs-on: ubuntu-latest
+    needs: [Collect-Deployment-Data ,deploy-to-cms,deploy-to-pro-store] 
+    if: |
+        always() && (( github.event.inputs.DeployToFirstAlert == 'Force' ) || ( needs.Collect-Deployment-Data.outputs.Deploytofirstalert == 'true' )) && 
+        (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped') &&
+        (needs.deploy-to-pro-store.result == 'success' || needs.deploy-to-pro-store.result == 'skipped') 
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Confirm DeployToFirstAlert is working 
+      run: |
+        echo " The DeployToFirstAlert job is working Properly" 
+        echo "${{needs.Collect-Deployment-Data.outputs.DeployToFirstAlert}}"
+
+  No-Deploy:
+    name: "No deployment"
+    runs-on: ubuntu-latest
+    needs: [Collect-Deployment-Data , deploy-to-cms , deploy-to-pro-store , deploy-to-first-alert]
+    if: |
+        always() && ( needs.deploy-to-cms.result == 'skipped') &&
+        (needs.deploy-to-pro-store.result == 'skipped') && ( needs.deploy-to-first-alert.result == 'skipped') 
+    # environment:
+    #   name: Quality
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Print the No Deploymemt
+      run: |
+        echo "There was no Deployment"
