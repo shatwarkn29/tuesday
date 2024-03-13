@@ -73,8 +73,9 @@ jobs:
       if: ${{ github.event.inputs.DeployToCMS == 'Auto' }}
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
-        
+        git diff --name-only Head^ Head > files.txt
+        git diff --name-only Head^ Head
+
         while IFS= read -r file
         do
           echo "$file"
@@ -92,8 +93,9 @@ jobs:
       if: ${{ github.event.inputs.DeployToProStore == 'Auto' }} 
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
-        
+        git diff --name-only Head^ Head > files.txt
+        git diff --name-only Head^ Head
+
         while IFS= read -r file
         do
           echo "$file"
@@ -112,8 +114,9 @@ jobs:
       if: ${{ github.event.inputs.DeployToFirstAlert == 'Auto' }}
       run: |
         echo "=============== list modified files ==============="
-        git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > files.txt
-        
+        git diff --name-only Head^ Head > files.txt
+        git diff --name-only Head^ Head
+
         while IFS= read -r file
         do
           echo "$file"
@@ -160,7 +163,7 @@ jobs:
     needs: [Collect-Deployment-Data ,deploy-to-cms]
     if: |
         always() &&
-        ((github.event.inputs.DeployToProStore  == 'Force') ||( needs.Collect-Deployment-Data.outputs.Deploytocms == 'true' ) )&&
+        ((github.event.inputs.DeployToProStore  == 'Force') ||( needs.Collect-Deployment-Data.outputs.Deploytoprostore == 'true' ) )&&
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
 
     # environment:
