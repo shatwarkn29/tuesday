@@ -172,8 +172,8 @@ jobs:
     - name:  Confirm DeployToProStore is working 
       run: |
         echo "The DeployToProStore job is working properly"
-        echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
-        if ([${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }}] -or (${{ github.event.inputs.DeployToProStore == 'Force'}})) {
+        echo "${{needs.Collect-Deployment-Data.outputs.Deploytoprostore}}"
+        if ([${{ needs.Collect-Deployment-Data.outputs.Deploytoprostore }}] -or (${{ github.event.inputs.DeployToProStore == 'Force'}})) {
           echo "This might work."
         }
           
