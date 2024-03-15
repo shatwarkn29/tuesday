@@ -173,7 +173,7 @@ jobs:
       run: |
         echo "The DeployToProStore job is working properly"
         echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
-        if [[ "${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }}" || "${{ github.event.inputs.DeployToCMS }}" == 'Force' ]]; then
+        if [[ "${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }}" || "${{ github.event.inputs.DeployToProStore }}" == 'Force' ]]; then
           echo "This might work."
         fi 
 
