@@ -173,6 +173,9 @@ jobs:
       run: |
         echo "The DeployToProStore job is working properly"
         echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
+        if [${{needs.Collect-Deployment-Data.outputs.DeployToProStore == 'true' }}]; then
+          echo "This might work."
+
 
   deploy-to-first-alert:
     name: "Deploy to firstalert"
