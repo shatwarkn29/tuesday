@@ -16,6 +16,7 @@ on:
         options:
         - Auto
         - Force
+        - Skip
       DeployToProStore:
         description: "Deploy to ProStore"
         type: choice
@@ -23,13 +24,15 @@ on:
         options:
         - Auto
         - Force
+        - Skip
       DeployToFirstAlert:
         description: "Deploy to FirstAlert"
         type: choice
         #required: true
         options:
         - Auto
-        - Force     
+        - Force 
+        - Skip    
 # env:
 #   GitBranch: 'release'
 #   APP_LOCATION: '/' # location of your client code
@@ -138,7 +141,8 @@ jobs:
     needs: [Collect-Deployment-Data]
     if: |
       always() &&
-      (( github.event.inputs.DeployToCMS  == 'Force' ) || ( needs.Collect-Deployment-Data.outputs.Deploytocms == 'true' ))
+      (( github.event.inputs.DeployToCMS  == 'Force' ) || ( needs.Collect-Deployment-Data.outputs.Deploytocms == 'true' )) &&
+      ( github.event.inputs.DeployToCMS  != 'Skip' )
     runs-on: ubuntu-latest
     permissions:
       contents: read # for actions/checkout to fetch code
@@ -161,6 +165,7 @@ jobs:
     if: |
         always() &&
         ((github.event.inputs.DeployToProStore  == 'Force') || ( needs.Collect-Deployment-Data.outputs.Deploytoprostore == 'true' ) )&&
+        (github.event.inputs.DeployToProStore  != 'Skip') &&
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
 
     # environment:
@@ -183,6 +188,7 @@ jobs:
     needs: [Collect-Deployment-Data ,deploy-to-cms,deploy-to-pro-store] 
     if: |
         always() && (( github.event.inputs.DeployToFirstAlert == 'Force' ) || ( needs.Collect-Deployment-Data.outputs.Deploytofirstalert == 'true' )) && 
+        ( github.event.inputs.DeployToFirstAlert != 'Skip' ) &&
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped') &&
         (needs.deploy-to-pro-store.result == 'success' || needs.deploy-to-pro-store.result == 'skipped') 
     # environment:
