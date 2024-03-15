@@ -160,7 +160,7 @@ jobs:
     needs: [Collect-Deployment-Data ,deploy-to-cms]
     if: |
         always() &&
-        ((github.event.inputs.DeployToProStore  == 'Force') ||( needs.Collect-Deployment-Data.outputs.Deploytoprostore == 'true' ) )&&
+        ((github.event.inputs.DeployToProStore  == 'Force') || ( needs.Collect-Deployment-Data.outputs.Deploytoprostore == 'true' ) )&&
         (needs.deploy-to-cms.result == 'success' || needs.deploy-to-cms.result == 'skipped')
 
     # environment:
@@ -173,7 +173,7 @@ jobs:
       run: |
         echo "The DeployToProStore job is working properly"
         echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
-        if (${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }} || ${{ github.event.inputs.DeployToProStore == 'Force'}}) {
+        if (${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }} -or ${{ github.event.inputs.DeployToProStore == 'Force'}}) {
           echo "This might work."
         }
           
