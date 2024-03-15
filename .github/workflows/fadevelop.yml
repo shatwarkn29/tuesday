@@ -173,10 +173,10 @@ jobs:
       run: |
         echo "The DeployToProStore job is working properly"
         echo "${{needs.Collect-Deployment-Data.outputs.DeployToProStore}}"
-        if [ ${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }} ] || [ ${{ github.event.inputs.DeployToProStore  == 'Force' }} ]; then
-          echo "This might work."
-        fi 
-
+        if [ ${{ needs.Collect-Deployment-Data.outputs.DeployToProStore }} ]  || [ ${{ github.event.inputs.DeployToProStore  == 'Force' }} ] {
+           echo "This might work."
+        }
+          
   deploy-to-first-alert:
     name: "Deploy to firstalert"
     runs-on: ubuntu-latest
