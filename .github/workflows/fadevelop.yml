@@ -156,7 +156,7 @@ jobs:
 
   deploy-to-pro-store:
     name: "Deploy to prostore"
-    runs-on: ubuntu-latest
+    runs-on: Windows-latest
     needs: [Collect-Deployment-Data ,deploy-to-cms]
     if: |
         always() &&
